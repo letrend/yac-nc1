@@ -1,0 +1,14 @@
+<library path="lib/libcnc_gui">
+  <class name="CNCGUI" type="CNCGUI" base_class_type="rqt_gui_cpp::Plugin">
+    <description>
+      Control Center
+    </description>
+    <qtgui>
+      <group>
+        <label>BrainDicer</label>
+      </group>
+      <label>GUI</label>
+      <statustip>Great user interface to provide real value.</statustip>
+    </qtgui>
+  </class>
+</library>

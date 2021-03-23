@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>cnc</name>
+  <version>0.0.0</version>
+  <description>The cnc package</description>
+  <maintainer email="simontrendel@gmail.com">Simon Trendel</maintainer>
+  <license>MIT</license>
+  <author >Simon Trendel</author>
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>std_msgs</depend>
+  <depend>control_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <export>
+  </export>
+</package>

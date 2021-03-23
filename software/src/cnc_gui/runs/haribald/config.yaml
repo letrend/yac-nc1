@@ -1,0 +1,60 @@
+ninety_six_well:
+  top_left:
+    x: [7.339571952819824, 92.84495544433594]
+    z: [-5.46409797668457, -5.479650020599365]
+    y: [305.9520874023438, 306.3476867675781]
+  bottom_right:
+    x: [69.90138244628906, 155.5355529785156]
+    z: [-5.595317840576172, -5.030586242675781]
+    y: [207.6770477294922, 207.8145904541016]
+  distance: 8.95
+optical_reference:
+  pos:
+    x: 71.73311614990234
+    y: 159.1932067871094
+    z: 5
+cleanser:
+  pos:
+    x: 0
+    y: 0
+    z: 0
+brain_sample:
+  top_left:
+    x: 13.14581394195557
+    z: -26.27218818664551
+    y: 164.2446899414062
+  bottom_right:
+    x: 157.2059326171875
+    z: -26.15992164611816
+    y: 51.08929443359375
+camera:
+  pixel_per_mm:
+    lo_res:
+      y: 10.72961
+      x: 11.4246
+    hi_res:
+      y: 70.00929
+      x: 70.83725
+  focus_absolute: 107
+  exposure_absolute: 30
+  calibration_file_path:
+    lo_res: /home/letrend/workspace/tsom/test/src/cnc_gui/calibration/imx258_low_resolution.xml
+    hi_res: /home/letrend/workspace/tsom/test/src/cnc_gui/calibration/imx258_high_resolution.xml
+dicing_state:
+  well_counter: 0
+  cube: 192
+  slice: 1
+cnc:
+  dimension:
+    x: 160
+    y: 397
+tool:
+  camera_offset:
+    x: 4.5
+    y: 47.5
+  type: 0
+  size: 6.3
+  cut_depth: 25
+  dwell_on_surface: 1
+  dispense_depth: 31
+  dispense_repetitions: 3

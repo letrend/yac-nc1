@@ -1,0 +1,5 @@
+.catkin_workspace
+build/
+devel/
+*.png
+src/CMakeLists.txt
