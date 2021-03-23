@@ -1,3 +1,12 @@
 [submodule "hardware/kicad_db"]
 	path = hardware/kicad_db
 	url = https://github.com/letrend/kicad_db
+[submodule "software/de10-nano-soc/ip/quadrature_decoder"]
+	path = software/de10-nano-soc/ip/quadrature_decoder
+	url = https://github.com/letrend/quadrature_decoder
+[submodule "software/de10-nano-soc/ip/stepper_fpga"]
+	path = software/de10-nano-soc/ip/stepper_fpga
+	url = https://github.com/letrend/stepper_fpga
+[submodule "software/de10-nano-soc/ip/--force"]
+	path = software/de10-nano-soc/ip/--force
+	url = https://github.com/letrend/stepper_fpga

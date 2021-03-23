@@ -1365,4 +1365,148 @@ F 3 "" H 9950 3925 50  0001 C CNN
 	1    9950 3925
 	0    1    1    0   
 $EndComp
+Text Notes 4350 2025 0    50   ~ 0
+0
+Text Notes 4350 2125 0    50   ~ 0
+2
+Text Notes 4350 2225 0    50   ~ 0
+4
+Text Notes 4350 2325 0    50   ~ 0
+6
+Text Notes 4350 2425 0    50   ~ 0
+8
+Text Notes 4350 2625 0    50   ~ 0
+10
+Text Notes 4350 2725 0    50   ~ 0
+12
+Text Notes 4350 2825 0    50   ~ 0
+14
+Text Notes 4350 2925 0    50   ~ 0
+16
+Text Notes 4350 3025 0    50   ~ 0
+18
+Text Notes 4350 3125 0    50   ~ 0
+20
+Text Notes 4350 3225 0    50   ~ 0
+22
+Text Notes 4350 3325 0    50   ~ 0
+24
+Text Notes 4350 3525 0    50   ~ 0
+26
+Text Notes 4350 3625 0    50   ~ 0
+28
+Text Notes 4350 3725 0    50   ~ 0
+30
+Text Notes 4350 3825 0    50   ~ 0
+32
+Text Notes 4350 3925 0    50   ~ 0
+34
+Text Notes 4550 2025 2    50   ~ 0
+1
+Text Notes 4550 2125 2    50   ~ 0
+3
+Text Notes 4550 2225 2    50   ~ 0
+5
+Text Notes 4550 2325 2    50   ~ 0
+7
+Text Notes 4550 2425 2    50   ~ 0
+9
+Text Notes 4550 2625 2    50   ~ 0
+11
+Text Notes 4550 2725 2    50   ~ 0
+13
+Text Notes 4550 2825 2    50   ~ 0
+15
+Text Notes 4550 2925 2    50   ~ 0
+17
+Text Notes 4550 3025 2    50   ~ 0
+19
+Text Notes 4550 3125 2    50   ~ 0
+21
+Text Notes 4550 3225 2    50   ~ 0
+23
+Text Notes 4550 3325 2    50   ~ 0
+25
+Text Notes 4550 3525 2    50   ~ 0
+27
+Text Notes 4550 3625 2    50   ~ 0
+29
+Text Notes 4550 3725 2    50   ~ 0
+31
+Text Notes 4550 3825 2    50   ~ 0
+33
+Text Notes 4550 3925 2    50   ~ 0
+35
+Text Notes 2900 3925 2    50   ~ 0
+0
+Text Notes 2900 3825 2    50   ~ 0
+2
+Text Notes 2900 3725 2    50   ~ 0
+4
+Text Notes 2900 3625 2    50   ~ 0
+6
+Text Notes 2900 3525 2    50   ~ 0
+8
+Text Notes 2900 3325 2    50   ~ 0
+10
+Text Notes 2900 3225 2    50   ~ 0
+12
+Text Notes 2900 3125 2    50   ~ 0
+14
+Text Notes 2900 3025 2    50   ~ 0
+16
+Text Notes 2900 2925 2    50   ~ 0
+18
+Text Notes 2900 2825 2    50   ~ 0
+20
+Text Notes 2900 2725 2    50   ~ 0
+22
+Text Notes 2900 2625 2    50   ~ 0
+24
+Text Notes 2900 2425 2    50   ~ 0
+26
+Text Notes 2900 2325 2    50   ~ 0
+28
+Text Notes 2900 2225 2    50   ~ 0
+30
+Text Notes 2900 2125 2    50   ~ 0
+32
+Text Notes 2900 2025 2    50   ~ 0
+34
+Text Notes 2700 3925 0    50   ~ 0
+1
+Text Notes 2700 3825 0    50   ~ 0
+3
+Text Notes 2700 3725 0    50   ~ 0
+5
+Text Notes 2700 3625 0    50   ~ 0
+7
+Text Notes 2700 3525 0    50   ~ 0
+9
+Text Notes 2700 3325 0    50   ~ 0
+11
+Text Notes 2700 3225 0    50   ~ 0
+13
+Text Notes 2700 3125 0    50   ~ 0
+15
+Text Notes 2700 3025 0    50   ~ 0
+17
+Text Notes 2700 2925 0    50   ~ 0
+19
+Text Notes 2700 2825 0    50   ~ 0
+21
+Text Notes 2700 2725 0    50   ~ 0
+23
+Text Notes 2700 2625 0    50   ~ 0
+25
+Text Notes 2700 2425 0    50   ~ 0
+27
+Text Notes 2700 2325 0    50   ~ 0
+29
+Text Notes 2700 2225 0    50   ~ 0
+31
+Text Notes 2700 2125 0    50   ~ 0
+33
+Text Notes 2700 2025 0    50   ~ 0
+35
 $EndSCHEMATC
