@@ -10,8 +10,7 @@
 
 /*
  * This file contains macros for module 'hps_0' and devices
- * connected to the following masters:
- *   h2f_axi_master
+ * connected to the following master:
  *   h2f_lw_axi_master
  * 
  * Do not include this header file and another header file created for a
@@ -21,140 +20,26 @@
  */
 
 /*
- * Macros for device 'ILC', class 'interrupt_latency_counter'
- * The macros are prefixed with 'ILC_'.
+ * Macros for device 'neopixel_0', class 'neopixel'
+ * The macros are prefixed with 'NEOPIXEL_0_'.
  * The prefix is the slave descriptor.
  */
-#define ILC_COMPONENT_TYPE interrupt_latency_counter
-#define ILC_COMPONENT_NAME ILC
-#define ILC_BASE 0x0
-#define ILC_SPAN 256
-#define ILC_END 0xff
+#define NEOPIXEL_0_COMPONENT_TYPE neopixel
+#define NEOPIXEL_0_COMPONENT_NAME neopixel_0
+#define NEOPIXEL_0_BASE 0x0
+#define NEOPIXEL_0_SPAN 1024
+#define NEOPIXEL_0_END 0x3ff
 
 /*
- * Macros for device 'led_pio', class 'altera_avalon_pio'
- * The macros are prefixed with 'LED_PIO_'.
+ * Macros for device 'stepper_position_contoller_3', class 'stepper_position_contoller'
+ * The macros are prefixed with 'STEPPER_POSITION_CONTOLLER_3_'.
  * The prefix is the slave descriptor.
  */
-#define LED_PIO_COMPONENT_TYPE altera_avalon_pio
-#define LED_PIO_COMPONENT_NAME led_pio
-#define LED_PIO_BASE 0x100
-#define LED_PIO_SPAN 16
-#define LED_PIO_END 0x10f
-#define LED_PIO_BIT_CLEARING_EDGE_REGISTER 0
-#define LED_PIO_BIT_MODIFYING_OUTPUT_REGISTER 0
-#define LED_PIO_CAPTURE 0
-#define LED_PIO_DATA_WIDTH 2
-#define LED_PIO_DO_TEST_BENCH_WIRING 0
-#define LED_PIO_DRIVEN_SIM_VALUE 0
-#define LED_PIO_EDGE_TYPE NONE
-#define LED_PIO_FREQ 50000000
-#define LED_PIO_HAS_IN 0
-#define LED_PIO_HAS_OUT 1
-#define LED_PIO_HAS_TRI 0
-#define LED_PIO_IRQ_TYPE NONE
-#define LED_PIO_RESET_VALUE 0
-
-/*
- * Macros for device 'dipsw_pio', class 'altera_avalon_pio'
- * The macros are prefixed with 'DIPSW_PIO_'.
- * The prefix is the slave descriptor.
- */
-#define DIPSW_PIO_COMPONENT_TYPE altera_avalon_pio
-#define DIPSW_PIO_COMPONENT_NAME dipsw_pio
-#define DIPSW_PIO_BASE 0x110
-#define DIPSW_PIO_SPAN 16
-#define DIPSW_PIO_END 0x11f
-#define DIPSW_PIO_IRQ 0
-#define DIPSW_PIO_BIT_CLEARING_EDGE_REGISTER 1
-#define DIPSW_PIO_BIT_MODIFYING_OUTPUT_REGISTER 0
-#define DIPSW_PIO_CAPTURE 1
-#define DIPSW_PIO_DATA_WIDTH 2
-#define DIPSW_PIO_DO_TEST_BENCH_WIRING 0
-#define DIPSW_PIO_DRIVEN_SIM_VALUE 0
-#define DIPSW_PIO_EDGE_TYPE ANY
-#define DIPSW_PIO_FREQ 50000000
-#define DIPSW_PIO_HAS_IN 1
-#define DIPSW_PIO_HAS_OUT 0
-#define DIPSW_PIO_HAS_TRI 0
-#define DIPSW_PIO_IRQ_TYPE EDGE
-#define DIPSW_PIO_RESET_VALUE 0
-
-/*
- * Macros for device 'button_pio', class 'altera_avalon_pio'
- * The macros are prefixed with 'BUTTON_PIO_'.
- * The prefix is the slave descriptor.
- */
-#define BUTTON_PIO_COMPONENT_TYPE altera_avalon_pio
-#define BUTTON_PIO_COMPONENT_NAME button_pio
-#define BUTTON_PIO_BASE 0x120
-#define BUTTON_PIO_SPAN 16
-#define BUTTON_PIO_END 0x12f
-#define BUTTON_PIO_IRQ 1
-#define BUTTON_PIO_BIT_CLEARING_EDGE_REGISTER 1
-#define BUTTON_PIO_BIT_MODIFYING_OUTPUT_REGISTER 0
-#define BUTTON_PIO_CAPTURE 1
-#define BUTTON_PIO_DATA_WIDTH 2
-#define BUTTON_PIO_DO_TEST_BENCH_WIRING 0
-#define BUTTON_PIO_DRIVEN_SIM_VALUE 0
-#define BUTTON_PIO_EDGE_TYPE FALLING
-#define BUTTON_PIO_FREQ 50000000
-#define BUTTON_PIO_HAS_IN 1
-#define BUTTON_PIO_HAS_OUT 0
-#define BUTTON_PIO_HAS_TRI 0
-#define BUTTON_PIO_IRQ_TYPE EDGE
-#define BUTTON_PIO_RESET_VALUE 0
-
-/*
- * Macros for device 'sysid_qsys', class 'altera_avalon_sysid_qsys'
- * The macros are prefixed with 'SYSID_QSYS_'.
- * The prefix is the slave descriptor.
- */
-#define SYSID_QSYS_COMPONENT_TYPE altera_avalon_sysid_qsys
-#define SYSID_QSYS_COMPONENT_NAME sysid_qsys
-#define SYSID_QSYS_BASE 0x130
-#define SYSID_QSYS_SPAN 8
-#define SYSID_QSYS_END 0x137
-#define SYSID_QSYS_ID 2976579765
-#define SYSID_QSYS_TIMESTAMP 1614948156
-
-/*
- * Macros for device 'jtag_uart', class 'altera_avalon_jtag_uart'
- * The macros are prefixed with 'JTAG_UART_'.
- * The prefix is the slave descriptor.
- */
-#define JTAG_UART_COMPONENT_TYPE altera_avalon_jtag_uart
-#define JTAG_UART_COMPONENT_NAME jtag_uart
-#define JTAG_UART_BASE 0x20000
-#define JTAG_UART_SPAN 8
-#define JTAG_UART_END 0x20007
-#define JTAG_UART_IRQ 2
-#define JTAG_UART_READ_DEPTH 64
-#define JTAG_UART_READ_THRESHOLD 8
-#define JTAG_UART_WRITE_DEPTH 64
-#define JTAG_UART_WRITE_THRESHOLD 8
-
-/*
- * Macros for device 'stepper_position_contoller_0', class 'stepper_position_contoller'
- * The macros are prefixed with 'STEPPER_POSITION_CONTOLLER_0_'.
- * The prefix is the slave descriptor.
- */
-#define STEPPER_POSITION_CONTOLLER_0_COMPONENT_TYPE stepper_position_contoller
-#define STEPPER_POSITION_CONTOLLER_0_COMPONENT_NAME stepper_position_contoller_0
-#define STEPPER_POSITION_CONTOLLER_0_BASE 0x40000
-#define STEPPER_POSITION_CONTOLLER_0_SPAN 64
-#define STEPPER_POSITION_CONTOLLER_0_END 0x4003f
-
-/*
- * Macros for device 'stepper_position_contoller_1', class 'stepper_position_contoller'
- * The macros are prefixed with 'STEPPER_POSITION_CONTOLLER_1_'.
- * The prefix is the slave descriptor.
- */
-#define STEPPER_POSITION_CONTOLLER_1_COMPONENT_TYPE stepper_position_contoller
-#define STEPPER_POSITION_CONTOLLER_1_COMPONENT_NAME stepper_position_contoller_1
-#define STEPPER_POSITION_CONTOLLER_1_BASE 0x40040
-#define STEPPER_POSITION_CONTOLLER_1_SPAN 64
-#define STEPPER_POSITION_CONTOLLER_1_END 0x4007f
+#define STEPPER_POSITION_CONTOLLER_3_COMPONENT_TYPE stepper_position_contoller
+#define STEPPER_POSITION_CONTOLLER_3_COMPONENT_NAME stepper_position_contoller_3
+#define STEPPER_POSITION_CONTOLLER_3_BASE 0x400
+#define STEPPER_POSITION_CONTOLLER_3_SPAN 64
+#define STEPPER_POSITION_CONTOLLER_3_END 0x43f
 
 /*
  * Macros for device 'stepper_position_contoller_2', class 'stepper_position_contoller'
@@ -163,20 +48,108 @@
  */
 #define STEPPER_POSITION_CONTOLLER_2_COMPONENT_TYPE stepper_position_contoller
 #define STEPPER_POSITION_CONTOLLER_2_COMPONENT_NAME stepper_position_contoller_2
-#define STEPPER_POSITION_CONTOLLER_2_BASE 0x40080
+#define STEPPER_POSITION_CONTOLLER_2_BASE 0x440
 #define STEPPER_POSITION_CONTOLLER_2_SPAN 64
-#define STEPPER_POSITION_CONTOLLER_2_END 0x400bf
+#define STEPPER_POSITION_CONTOLLER_2_END 0x47f
 
 /*
- * Macros for device 'neopixel_0', class 'neopixel'
- * The macros are prefixed with 'NEOPIXEL_0_'.
+ * Macros for device 'stepper_position_contoller_1', class 'stepper_position_contoller'
+ * The macros are prefixed with 'STEPPER_POSITION_CONTOLLER_1_'.
  * The prefix is the slave descriptor.
  */
-#define NEOPIXEL_0_COMPONENT_TYPE neopixel
-#define NEOPIXEL_0_COMPONENT_NAME neopixel_0
-#define NEOPIXEL_0_BASE 0x40400
-#define NEOPIXEL_0_SPAN 1024
-#define NEOPIXEL_0_END 0x407ff
+#define STEPPER_POSITION_CONTOLLER_1_COMPONENT_TYPE stepper_position_contoller
+#define STEPPER_POSITION_CONTOLLER_1_COMPONENT_NAME stepper_position_contoller_1
+#define STEPPER_POSITION_CONTOLLER_1_BASE 0x480
+#define STEPPER_POSITION_CONTOLLER_1_SPAN 64
+#define STEPPER_POSITION_CONTOLLER_1_END 0x4bf
+
+/*
+ * Macros for device 'stepper_position_contoller_0', class 'stepper_position_contoller'
+ * The macros are prefixed with 'STEPPER_POSITION_CONTOLLER_0_'.
+ * The prefix is the slave descriptor.
+ */
+#define STEPPER_POSITION_CONTOLLER_0_COMPONENT_TYPE stepper_position_contoller
+#define STEPPER_POSITION_CONTOLLER_0_COMPONENT_NAME stepper_position_contoller_0
+#define STEPPER_POSITION_CONTOLLER_0_BASE 0x4c0
+#define STEPPER_POSITION_CONTOLLER_0_SPAN 64
+#define STEPPER_POSITION_CONTOLLER_0_END 0x4ff
+
+/*
+ * Macros for device 'SWITCHES', class 'altera_avalon_pio'
+ * The macros are prefixed with 'SWITCHES_'.
+ * The prefix is the slave descriptor.
+ */
+#define SWITCHES_COMPONENT_TYPE altera_avalon_pio
+#define SWITCHES_COMPONENT_NAME SWITCHES
+#define SWITCHES_BASE 0x500
+#define SWITCHES_SPAN 16
+#define SWITCHES_END 0x50f
+#define SWITCHES_BIT_CLEARING_EDGE_REGISTER 0
+#define SWITCHES_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define SWITCHES_CAPTURE 0
+#define SWITCHES_DATA_WIDTH 4
+#define SWITCHES_DO_TEST_BENCH_WIRING 0
+#define SWITCHES_DRIVEN_SIM_VALUE 0
+#define SWITCHES_EDGE_TYPE NONE
+#define SWITCHES_FREQ 50000000
+#define SWITCHES_HAS_IN 1
+#define SWITCHES_HAS_OUT 0
+#define SWITCHES_HAS_TRI 0
+#define SWITCHES_IRQ_TYPE NONE
+#define SWITCHES_RESET_VALUE 0
+
+/*
+ * Macros for device 'LED', class 'altera_avalon_pio'
+ * The macros are prefixed with 'LED_'.
+ * The prefix is the slave descriptor.
+ */
+#define LED_COMPONENT_TYPE altera_avalon_pio
+#define LED_COMPONENT_NAME LED
+#define LED_BASE 0x510
+#define LED_SPAN 16
+#define LED_END 0x51f
+#define LED_BIT_CLEARING_EDGE_REGISTER 0
+#define LED_BIT_MODIFYING_OUTPUT_REGISTER 0
+#define LED_CAPTURE 0
+#define LED_DATA_WIDTH 8
+#define LED_DO_TEST_BENCH_WIRING 0
+#define LED_DRIVEN_SIM_VALUE 0
+#define LED_EDGE_TYPE NONE
+#define LED_FREQ 50000000
+#define LED_HAS_IN 0
+#define LED_HAS_OUT 1
+#define LED_HAS_TRI 0
+#define LED_IRQ_TYPE NONE
+#define LED_RESET_VALUE 0
+
+/*
+ * Macros for device 'sysid_qsys', class 'altera_avalon_sysid_qsys'
+ * The macros are prefixed with 'SYSID_QSYS_'.
+ * The prefix is the slave descriptor.
+ */
+#define SYSID_QSYS_COMPONENT_TYPE altera_avalon_sysid_qsys
+#define SYSID_QSYS_COMPONENT_NAME sysid_qsys
+#define SYSID_QSYS_BASE 0x1000
+#define SYSID_QSYS_SPAN 8
+#define SYSID_QSYS_END 0x1007
+#define SYSID_QSYS_ID 2976579765
+#define SYSID_QSYS_TIMESTAMP 1616749252
+
+/*
+ * Macros for device 'jtag_uart', class 'altera_avalon_jtag_uart'
+ * The macros are prefixed with 'JTAG_UART_'.
+ * The prefix is the slave descriptor.
+ */
+#define JTAG_UART_COMPONENT_TYPE altera_avalon_jtag_uart
+#define JTAG_UART_COMPONENT_NAME jtag_uart
+#define JTAG_UART_BASE 0x2000
+#define JTAG_UART_SPAN 8
+#define JTAG_UART_END 0x2007
+#define JTAG_UART_IRQ 0
+#define JTAG_UART_READ_DEPTH 64
+#define JTAG_UART_READ_THRESHOLD 8
+#define JTAG_UART_WRITE_DEPTH 64
+#define JTAG_UART_WRITE_THRESHOLD 8
 
 
 #endif /* _ALTERA_HPS_0_H_ */

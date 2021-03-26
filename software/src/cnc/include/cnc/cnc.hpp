@@ -46,7 +46,7 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
                 IOWR(stepper_base[i],REGISTER::deadband,20);
                 IOWR(stepper_base[i],REGISTER::integralMax,10);
                 IOWR(stepper_base[i],REGISTER::outputMax,max_speed[i]);
-                Zero(i);
+                // Zero(i);
         }
 
         spinner = boost::shared_ptr<ros::AsyncSpinner>(new ros::AsyncSpinner(0));
@@ -78,7 +78,7 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
 bool ZeroService(std_srvs::Trigger::Request &req,std_srvs::Trigger::Response &res){
         ROS_INFO("zero service called");
         bool timeout = false;
-        for(int motor=2; motor>=0; motor--) {
+        for(int motor=number_of_motors-1; motor>=0; motor--) {
                 if(!Zero(motor)) {
                         timeout = true;
                 }

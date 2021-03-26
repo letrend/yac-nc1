@@ -11,7 +11,7 @@ if (DEFINED "ENV{SOCEDS_DEST_ROOT}")
     set(CMAKE_SYSTEM_NAME Linux)
     set(CMAKE_SYSTEM_PROCESSOR armv7l)
 
-    set(compiler_path /usr/bin)
+    set(compiler_path /opt/gcc-linaro-6.5.0-2018.12-x86_64_arm-linux-gnueabihf/bin)
     set(CMAKE_C_COMPILER ${compiler_path}/arm-linux-gnueabihf-gcc)
     set(CMAKE_CXX_COMPILER ${compiler_path}/arm-linux-gnueabihf-g++)
     #==============================================================================
@@ -24,6 +24,8 @@ if (DEFINED "ENV{SOCEDS_DEST_ROOT}")
             sensor_msgs
             )
     include(findros)
+
+    include_directories(/usr/include)
 
     find_package(PkgConfig REQUIRED)
 
