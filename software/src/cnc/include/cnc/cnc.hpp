@@ -41,6 +41,7 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
         position_offset.resize(number_of_motors);
 
         for(int i=number_of_motors-1; i>=0; i--) {
+                IOWR(stepper_base[i],REGISTER::enable,1);
                 IOWR(stepper_base[i],REGISTER::Kp,1);
                 IOWR(stepper_base[i],REGISTER::Ki,1);
                 IOWR(stepper_base[i],REGISTER::deadband,20);
@@ -253,6 +254,8 @@ enum REGISTER {
         result,
         zero,
         endswitch,
-        ticks_per_millisecond
+        ticks_per_millisecond,
+        enable,
+        ms
 };
 };

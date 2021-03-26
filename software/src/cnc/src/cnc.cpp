@@ -32,8 +32,7 @@ void SigintHandler(int sig){
         cout << "shutting down" << endl;
         ros::shutdown();
         for(int i=0; i<h2p_lw_stepper_addr.size(); i++) {
-                IOWR(h2p_lw_stepper_addr[i],1,0);
-                IOWR(h2p_lw_stepper_addr[i],2,0);
+                IOWR(h2p_lw_stepper_addr[i],CNC::REGISTER::enable,0);
         }
         for(int i=0; i<16; i++) {
                 IOWR(h2p_lw_neopixel_addr,i+1,255<<8);
