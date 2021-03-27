@@ -48,6 +48,9 @@ if (DEFINED "ENV{SOCEDS_DEST_ROOT}")
     add_executable( cnc src/cnc.cpp )
     target_link_libraries( cnc -lpthread -lrt ${ros_LIBRARIES} )
 
+    add_executable( test_stepper src/test_stepper.cpp )
+    target_link_libraries( test_stepper -lpthread -lrt ${ros_LIBRARIES} )
+
     #==============================================================================
     # Installation
     #==============================================================================

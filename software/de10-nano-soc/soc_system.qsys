@@ -21,7 +21,7 @@
    {
       datum baseAddress
       {
-         value = "1296";
+         value = "1552";
          type = "String";
       }
    }
@@ -37,7 +37,7 @@
    {
       datum baseAddress
       {
-         value = "1280";
+         value = "1536";
          type = "String";
       }
    }
@@ -1061,6 +1061,14 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element stepper_position_contoller_0
    {
       datum _sortIndex
@@ -1073,7 +1081,7 @@
    {
       datum baseAddress
       {
-         value = "1216";
+         value = "1408";
          type = "String";
       }
    }
@@ -1089,7 +1097,7 @@
    {
       datum baseAddress
       {
-         value = "1152";
+         value = "1280";
          type = "String";
       }
    }
@@ -1105,7 +1113,7 @@
    {
       datum baseAddress
       {
-         value = "1088";
+         value = "1152";
          type = "String";
       }
    }
@@ -1870,7 +1878,7 @@
    start="hps_0.h2f_lw_axi_master"
    end="stepper_position_contoller_0.avalon_slave_0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04c0" />
+  <parameter name="baseAddress" value="0x0580" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1879,7 +1887,7 @@
    start="hps_0.h2f_lw_axi_master"
    end="stepper_position_contoller_1.avalon_slave_0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0480" />
+  <parameter name="baseAddress" value="0x0500" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1888,7 +1896,7 @@
    start="hps_0.h2f_lw_axi_master"
    end="stepper_position_contoller_2.avalon_slave_0">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0440" />
+  <parameter name="baseAddress" value="0x0480" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1924,7 +1932,7 @@
    start="hps_0.h2f_lw_axi_master"
    end="LED.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0510" />
+  <parameter name="baseAddress" value="0x0610" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -1933,7 +1941,7 @@
    start="hps_0.h2f_lw_axi_master"
    end="SWITCHES.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0500" />
+  <parameter name="baseAddress" value="0x0600" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="clock" version="20.1" start="clk_0.clk" end="sysid_qsys.clk" />

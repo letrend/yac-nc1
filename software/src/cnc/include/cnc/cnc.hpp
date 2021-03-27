@@ -117,7 +117,7 @@ void MotorStatePublisher(){
                 motor_state.header.stamp = ros::Time::now();
                 for(int i=0; i<number_of_motors; i++) {
                         motor_state.position[i] = int(IORD(stepper_base[i],REGISTER::position))*MM_PER_TICK*axis_sign[i]+axis_position_offset[i]; // 500000 ticks for 243mm
-                        motor_state.velocity[i] = int(IORD(stepper_base[i],REGISTER::position))*MM_PER_TICK; // millimeter per millisecond
+                        motor_state.velocity[i] = int(IORD(stepper_base[i],REGISTER::ticks_per_millisecond))*MM_PER_TICK; // millimeter per millisecond
                         // if((ros::Time::now()-t1).toSec()>3 && i==1){
                         //     ROS_INFO_THROTTLE(1,
                         //       "setpoint %d\n"
@@ -251,11 +251,13 @@ enum REGISTER {
         position,
         pterm,
         iterm,
+        term_sum,
         result,
         zero,
         endswitch,
         ticks_per_millisecond,
         enable,
-        ms
+        ms,
+        result_freq
 };
 };

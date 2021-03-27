@@ -38,8 +38,8 @@
 #define STEPPER_POSITION_CONTOLLER_3_COMPONENT_TYPE stepper_position_contoller
 #define STEPPER_POSITION_CONTOLLER_3_COMPONENT_NAME stepper_position_contoller_3
 #define STEPPER_POSITION_CONTOLLER_3_BASE 0x400
-#define STEPPER_POSITION_CONTOLLER_3_SPAN 64
-#define STEPPER_POSITION_CONTOLLER_3_END 0x43f
+#define STEPPER_POSITION_CONTOLLER_3_SPAN 128
+#define STEPPER_POSITION_CONTOLLER_3_END 0x47f
 
 /*
  * Macros for device 'stepper_position_contoller_2', class 'stepper_position_contoller'
@@ -48,9 +48,9 @@
  */
 #define STEPPER_POSITION_CONTOLLER_2_COMPONENT_TYPE stepper_position_contoller
 #define STEPPER_POSITION_CONTOLLER_2_COMPONENT_NAME stepper_position_contoller_2
-#define STEPPER_POSITION_CONTOLLER_2_BASE 0x440
-#define STEPPER_POSITION_CONTOLLER_2_SPAN 64
-#define STEPPER_POSITION_CONTOLLER_2_END 0x47f
+#define STEPPER_POSITION_CONTOLLER_2_BASE 0x480
+#define STEPPER_POSITION_CONTOLLER_2_SPAN 128
+#define STEPPER_POSITION_CONTOLLER_2_END 0x4ff
 
 /*
  * Macros for device 'stepper_position_contoller_1', class 'stepper_position_contoller'
@@ -59,9 +59,9 @@
  */
 #define STEPPER_POSITION_CONTOLLER_1_COMPONENT_TYPE stepper_position_contoller
 #define STEPPER_POSITION_CONTOLLER_1_COMPONENT_NAME stepper_position_contoller_1
-#define STEPPER_POSITION_CONTOLLER_1_BASE 0x480
-#define STEPPER_POSITION_CONTOLLER_1_SPAN 64
-#define STEPPER_POSITION_CONTOLLER_1_END 0x4bf
+#define STEPPER_POSITION_CONTOLLER_1_BASE 0x500
+#define STEPPER_POSITION_CONTOLLER_1_SPAN 128
+#define STEPPER_POSITION_CONTOLLER_1_END 0x57f
 
 /*
  * Macros for device 'stepper_position_contoller_0', class 'stepper_position_contoller'
@@ -70,9 +70,9 @@
  */
 #define STEPPER_POSITION_CONTOLLER_0_COMPONENT_TYPE stepper_position_contoller
 #define STEPPER_POSITION_CONTOLLER_0_COMPONENT_NAME stepper_position_contoller_0
-#define STEPPER_POSITION_CONTOLLER_0_BASE 0x4c0
-#define STEPPER_POSITION_CONTOLLER_0_SPAN 64
-#define STEPPER_POSITION_CONTOLLER_0_END 0x4ff
+#define STEPPER_POSITION_CONTOLLER_0_BASE 0x580
+#define STEPPER_POSITION_CONTOLLER_0_SPAN 128
+#define STEPPER_POSITION_CONTOLLER_0_END 0x5ff
 
 /*
  * Macros for device 'SWITCHES', class 'altera_avalon_pio'
@@ -81,9 +81,9 @@
  */
 #define SWITCHES_COMPONENT_TYPE altera_avalon_pio
 #define SWITCHES_COMPONENT_NAME SWITCHES
-#define SWITCHES_BASE 0x500
+#define SWITCHES_BASE 0x600
 #define SWITCHES_SPAN 16
-#define SWITCHES_END 0x50f
+#define SWITCHES_END 0x60f
 #define SWITCHES_BIT_CLEARING_EDGE_REGISTER 0
 #define SWITCHES_BIT_MODIFYING_OUTPUT_REGISTER 0
 #define SWITCHES_CAPTURE 0
@@ -105,9 +105,9 @@
  */
 #define LED_COMPONENT_TYPE altera_avalon_pio
 #define LED_COMPONENT_NAME LED
-#define LED_BASE 0x510
+#define LED_BASE 0x610
 #define LED_SPAN 16
-#define LED_END 0x51f
+#define LED_END 0x61f
 #define LED_BIT_CLEARING_EDGE_REGISTER 0
 #define LED_BIT_MODIFYING_OUTPUT_REGISTER 0
 #define LED_CAPTURE 0
@@ -133,7 +133,7 @@
 #define SYSID_QSYS_SPAN 8
 #define SYSID_QSYS_END 0x1007
 #define SYSID_QSYS_ID 2976579765
-#define SYSID_QSYS_TIMESTAMP 1616749252
+#define SYSID_QSYS_TIMESTAMP 1616838299
 
 /*
  * Macros for device 'jtag_uart', class 'altera_avalon_jtag_uart'
