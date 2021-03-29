@@ -692,4 +692,8 @@ set_global_assignment -name SDC_FILE DE10_NANO_SOC_GHRD.sdc
 set_global_assignment -name VERILOG_FILE ip/intr_capturer/intr_capturer.v
 set_global_assignment -name VERILOG_FILE ip/edge_detect/altera_edge_detector.v
 set_global_assignment -name VERILOG_FILE ip/debounce/debounce.v
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_0[34]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_0[32]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_0[30]
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to GPIO_0[28]
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -38,8 +38,8 @@ camera:
   focus_absolute: 107
   exposure_absolute: 30
   calibration_file_path:
-    lo_res: /home/letrend/workspace/tsom/test/src/cnc_gui/calibration/imx258_low_resolution.xml
-    hi_res: /home/letrend/workspace/tsom/test/src/cnc_gui/calibration/imx258_high_resolution.xml
+    lo_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_low_resolution.xml
+    hi_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_high_resolution.xml
 dicing_state:
   well_counter: 0
   cube: 192

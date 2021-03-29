@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
         if (!output_path.empty()) {
                 cout << "using output path " << output_path << endl;
         }
-
+        cout << "starting camera" << endl;
         // open the default camera using default API
         // cap.open(0);
         // OR advance usage: select any API backend

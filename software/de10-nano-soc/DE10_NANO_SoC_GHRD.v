@@ -137,7 +137,7 @@ soc_system u0(
 			.stepper_position_contoller_0_conduit_end_endswitch(GPIO_0[34]),
 			// stepper 1
 			.stepper_position_contoller_1_conduit_end_a(GPIO_0[29]),
-			.stepper_position_contoller_1_conduit_end_b(GPIO_0[27]),
+			.stepper_position_contoller_1_conduit_end_b(GPIO_0[27]), 
 			.stepper_position_contoller_1_conduit_end_i(GPIO_0[25]),
 			.stepper_position_contoller_1_conduit_end_dir(GPIO_0[8]),
 			.stepper_position_contoller_1_conduit_end_step(GPIO_0[6]),
@@ -157,7 +157,7 @@ soc_system u0(
 			.stepper_position_contoller_3_conduit_end_a(GPIO_0[17]),
 			.stepper_position_contoller_3_conduit_end_b(GPIO_0[15]), 
 			.stepper_position_contoller_3_conduit_end_i(GPIO_0[13]),
-			.stepper_position_contoller_3_conduit_end_dir(GPIO_1[26]),  
+			.stepper_position_contoller_3_conduit_end_dir(GPIO_1[26]),   
 			.stepper_position_contoller_3_conduit_end_step(GPIO_1[28]),
 			.stepper_position_contoller_3_conduit_end_enable(GPIO_1[34]),  
 			.stepper_position_contoller_3_conduit_end_ms({GPIO_1[30],GPIO_1[32]}),

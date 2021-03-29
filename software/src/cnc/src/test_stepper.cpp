@@ -117,7 +117,7 @@ int main(int argc, char *argv[]) {
         IOWR(h2p_lw_stepper_addr[0],CNC::REGISTER::Ki,0);
         IOWR(h2p_lw_stepper_addr[0],CNC::REGISTER::deadband,0);
         IOWR(h2p_lw_stepper_addr[0],CNC::REGISTER::outputMax,5000);
-        IOWR(h2p_lw_stepper_addr[0],CNC::REGISTER::zero,1);
+        IOWR(h2p_lw_stepper_addr[0],CNC::REGISTER::pos_offset,1);
         IOWR(h2p_lw_stepper_addr[0],CNC::REGISTER::enable,1);
 
         // IOWR(h2p_lw_stepper_addr[0],CNC::REGISTER::setpoint,-100000000);

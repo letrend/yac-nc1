@@ -31,6 +31,7 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
         nh = ros::NodeHandlePtr(new ros::NodeHandle);
         motor_state_pub = nh->advertise<sensor_msgs::JointState>("/motor/state",1);
         pid_state_pub = nh->advertise<control_msgs::PidState>("/motor/controller_state",1);
+        endswitch_pub = nh->advertise<geometry_msgs::Vector3>("/motor/endswitch",1);
         joystick_sub = nh->subscribe("/joy",1,&CNC::JoyCallback,this);
         position_sub = nh->subscribe("/motor/command",1,&CNC::PositionCommandCallback,this);
         neopixel_single_sub = nh->subscribe("/neopixel/single",1,&CNC::NeopixelSingleCallback,this);
@@ -41,13 +42,14 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
         position_offset.resize(number_of_motors);
 
         for(int i=number_of_motors-1; i>=0; i--) {
-                IOWR(stepper_base[i],REGISTER::enable,1);
+                IOWR(stepper_base[0],REGISTER::ms,STEP_16);
                 IOWR(stepper_base[i],REGISTER::Kp,1);
                 IOWR(stepper_base[i],REGISTER::Ki,1);
                 IOWR(stepper_base[i],REGISTER::deadband,20);
                 IOWR(stepper_base[i],REGISTER::integralMax,10);
                 IOWR(stepper_base[i],REGISTER::outputMax,max_speed[i]);
-                // Zero(i);
+                IOWR(stepper_base[i],REGISTER::enable,1);
+                Zero(i);
         }
 
         spinner = boost::shared_ptr<ros::AsyncSpinner>(new ros::AsyncSpinner(0));
@@ -73,7 +75,7 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
                 IOWR(neopixel,0,1);
                 rate.sleep();
         }
-
+        ROS_INFO("cnc initialized for %d motors", number_of_motors);
 };
 
 bool ZeroService(std_srvs::Trigger::Request &req,std_srvs::Trigger::Response &res){
@@ -96,7 +98,7 @@ bool Zero(int motor){
                 IOWR(stepper_base[motor],REGISTER::setpoint,current_pos+10000);
                 timeout = (ros::Time::now()-t0).toSec()>30;
         }
-        IOWR(stepper_base[motor],REGISTER::zero,1);
+        IOWR(stepper_base[motor],REGISTER::pos_offset,1);
         IOWR(stepper_base[motor],REGISTER::setpoint,0);
         if(timeout) {
                 ROS_WARN("timeout on axis %d, check endswitch!!", motor);
@@ -111,6 +113,9 @@ void MotorStatePublisher(){
         motor_state.position.resize(number_of_motors);
         motor_state.velocity.resize(number_of_motors);
         motor_state.effort.resize(number_of_motors);
+        vector<int> endswitch;
+        endswitch.resize(number_of_motors);
+        geometry_msgs::Vector3 msg;
         ros::Rate rate(100);
         while(ros::ok()) {
                 motor_state.header.seq++;
@@ -118,27 +123,13 @@ void MotorStatePublisher(){
                 for(int i=0; i<number_of_motors; i++) {
                         motor_state.position[i] = int(IORD(stepper_base[i],REGISTER::position))*MM_PER_TICK*axis_sign[i]+axis_position_offset[i]; // 500000 ticks for 243mm
                         motor_state.velocity[i] = int(IORD(stepper_base[i],REGISTER::ticks_per_millisecond))*MM_PER_TICK; // millimeter per millisecond
-                        // if((ros::Time::now()-t1).toSec()>3 && i==1){
-                        //     ROS_INFO_THROTTLE(1,
-                        //       "setpoint %d\n"
-                        //       "Kp %d\n"
-                        //       "Ki %d\n"
-                        //       "deadband %d\n"
-                        //       "integralMax %d\n"
-                        //       "outputMax %d\n"
-                        //       "error %d\n"
-                        //       "position %d\n"
-                        //       "pterm %d\n"
-                        //       "iterm %d\n"
-                        //       "result %d",
-                        //       IORD(stepper_base[i],REGISTER::setpoint), IORD(stepper_base[i],REGISTER::Kp), IORD(stepper_base[i],REGISTER::Ki),
-                        //       IORD(stepper_base[i],REGISTER::deadband), IORD(stepper_base[i],REGISTER::integralMax), IORD(stepper_base[i],REGISTER::outputMax),
-                        //       IORD(stepper_base[i],REGISTER::error), IORD(stepper_base[i],REGISTER::position), IORD(stepper_base[i],REGISTER::pterm),
-                        //       IORD(stepper_base[i],REGISTER::iterm), IORD(stepper_base[i],REGISTER::result)
-                        //   );
-                        //   t1 = ros::Time::now();
-                        // }
+                        endswitch[i] = int(IORD(stepper_base[i],REGISTER::endswitch));
                 }
+                msg.x = endswitch[0];
+                msg.y = endswitch[1];
+                msg.z = endswitch[2];
+                // ROS_INFO_THROTTLE(1,"%d %d %d", endswitch[0], endswitch[1], endswitch[2]);
+                endswitch_pub.publish(msg);
                 motor_state_pub.publish(motor_state);
                 t0 = motor_state.header.stamp;
                 rate.sleep();
@@ -222,7 +213,7 @@ void JoyCallback(const sensor_msgs::JoyConstPtr &msg){
 
 ros::NodeHandlePtr nh;
 boost::shared_ptr<ros::AsyncSpinner> spinner;
-ros::Publisher motor_state_pub, pid_state_pub;
+ros::Publisher motor_state_pub, pid_state_pub, endswitch_pub;
 ros::Subscriber joystick_sub, position_sub, neopixel_single_sub, neopixel_all_sub;
 ros::ServiceServer zero_srv;
 boost::shared_ptr<std::thread> motor_state_thread;
@@ -234,30 +225,36 @@ int32_t *end_switches, *neopixel;
 int number_of_motors = 0, control_mode = -1;
 vector<int> position_offset;
 const vector<int> setpoint_delta_axis = {3,4,1},
-                  max_speed = {6000,6000,6000};
+                  max_speed = {5000,4000,5000};
 const vector<float> max_position = {160,398,0},
                     min_position = {0,0,-45},
                     axis_sign = {-1,1,1},
                     axis_position_offset = {0,398,0};
 
 enum REGISTER {
-        setpoint,
-        Kp,
-        Ki,
-        deadband,
-        integralMax,
-        outputMax,
-        error,
-        position,
-        pterm,
-        iterm,
-        term_sum,
-        result,
-        zero,
-        endswitch,
-        ticks_per_millisecond,
-        enable,
-        ms,
-        result_freq
+        setpoint = 0x0,
+        Kp = 0x1,
+        Ki = 0x2,
+        deadband = 0x3,
+        integralMax = 0x4,
+        outputMax = 0x5,
+        error = 0x6,
+        position = 0x7,
+        pterm = 0x8,
+        iterm = 0x9,
+        term_sum = 0xA,
+        result = 0xB,
+        pos_offset = 0xC,
+        endswitch = 0xD,
+        ticks_per_millisecond = 0xE,
+        enable = 0xF,
+        ms = 0x10,
+        result_freq = 0x11
+};
+enum MODESELECT {
+        STEP_8,
+        STEP_2,
+        STEP_4,
+        STEP_16
 };
 };
