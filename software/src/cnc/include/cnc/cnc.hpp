@@ -32,7 +32,6 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
         motor_state_pub = nh->advertise<sensor_msgs::JointState>("/motor/state",1);
         pid_state_pub = nh->advertise<control_msgs::PidState>("/motor/controller_state",1);
         endswitch_pub = nh->advertise<geometry_msgs::Vector3>("/motor/endswitch",1);
-        joystick_sub = nh->subscribe("/joy",1,&CNC::JoyCallback,this);
         position_sub = nh->subscribe("/motor/command",1,&CNC::PositionCommandCallback,this);
         neopixel_single_sub = nh->subscribe("/neopixel/single",1,&CNC::NeopixelSingleCallback,this);
         neopixel_all_sub = nh->subscribe("/neopixel/all",1,&CNC::NeopixelAllCallback,this);
@@ -101,7 +100,17 @@ bool Zero(int motor){
                 timeout = (ros::Time::now()-t0).toSec()>30;
         }
         IOWR(stepper_base[motor],REGISTER::pos_offset,1);
-        IOWR(stepper_base[motor],REGISTER::setpoint,0);
+        switch (motor) {
+        case 0:
+                IOWR(stepper_base[0],REGISTER::setpoint,int(((min_position[0]+1)*axis_sign[0]-axis_position_offset[0])/MM_PER_TICK));
+                break;
+        case 1:
+                IOWR(stepper_base[1],REGISTER::setpoint,int(((max_position[1]-1)*axis_sign[1]-axis_position_offset[1])/MM_PER_TICK));
+                break;
+        case 2:
+                IOWR(stepper_base[2],REGISTER::setpoint,int(((max_position[2]-1)*axis_sign[2]-axis_position_offset[2])/MM_PER_TICK));
+                break;
+        }
         if(timeout) {
                 ROS_WARN("timeout on axis %d, check endswitch!!", motor);
                 return false;
@@ -172,51 +181,10 @@ void NeopixelSingleCallback(const sensor_msgs::ChannelFloat32ConstPtr &msg){
         IOWR(neopixel,0,1);
 }
 
-void JoyCallback(const sensor_msgs::JoyConstPtr &msg){
-        bool button_a = msg->buttons[0];
-        bool button_b = msg->buttons[1];
-        bool button_x = msg->buttons[2];
-        bool button_y = msg->buttons[3];
-        bool button_start = msg->buttons[7];
-        bool button_back = msg->buttons[6];
-        if(button_b) {
-                control_mode = -1;
-        }
-
-        if(button_a) {
-                control_mode = POSITION;
-                for(int i=0; i<number_of_motors; i++)
-                        position_offset[i] = IORD(stepper_base[i],REGISTER::position);
-                ROS_WARN("POSITION control activated");
-        }
-        // if(button_x){
-        //   control_mode = VELOCITY;
-        //   pid_params[i].set_point = 0;
-        //   ROS_WARN("VELOCITY control activated");
-        // }
-        // if(button_y){
-        //   control_mode = FORCE;
-        //   pid_params[i].set_point = 0;
-        //   ROS_WARN("FORCE control activated");
-        // }
-
-        for(int i=0; i<number_of_motors; i++) {
-                switch(control_mode) {
-                case POSITION: {
-                        IOWR(stepper_base[i],REGISTER::setpoint,int(-msg->axes[setpoint_delta_axis[i]]*max_position[i]/MM_PER_TICK));
-                        break;
-                }
-                default: {
-                        ROS_WARN("controller deactivated, choose A: POSITION");
-                }
-                }
-        }
-}
-
 ros::NodeHandlePtr nh;
 boost::shared_ptr<ros::AsyncSpinner> spinner;
 ros::Publisher motor_state_pub, pid_state_pub, endswitch_pub;
-ros::Subscriber joystick_sub, position_sub, neopixel_single_sub, neopixel_all_sub;
+ros::Subscriber position_sub, neopixel_single_sub, neopixel_all_sub;
 ros::ServiceServer zero_srv;
 boost::shared_ptr<std::thread> motor_state_thread;
 sensor_msgs::JointState motor_state;
@@ -233,7 +201,7 @@ const vector<int> setpoint_delta_axis = {3,4,1},
 const vector<float> max_position = {160,398,0},
                     min_position = {0,0,-52},
                     axis_sign = {-1,1,1},
-                    axis_position_offset = {0,398,-1};
+                    axis_position_offset = {0,398,0};
 
 enum REGISTER {
         setpoint = 0x0,
