@@ -42,7 +42,9 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
         position_offset.resize(number_of_motors);
 
         for(int i=number_of_motors-1; i>=0; i--) {
-                IOWR(stepper_base[0],REGISTER::ms,STEP_16);
+                IOWR(stepper_base[i],REGISTER::ms,STEP_16);
+                IOWR(stepper_base[i],REGISTER::ramp_up_limit,ramp_up_limits[i]);
+                IOWR(stepper_base[i],REGISTER::ramp_up_threshold,ramp_up_thresholds[i]);
                 IOWR(stepper_base[i],REGISTER::Kp,1);
                 IOWR(stepper_base[i],REGISTER::Ki,1);
                 IOWR(stepper_base[i],REGISTER::deadband,20);
@@ -225,11 +227,13 @@ int32_t *end_switches, *neopixel;
 int number_of_motors = 0, control_mode = -1;
 vector<int> position_offset;
 const vector<int> setpoint_delta_axis = {3,4,1},
-                  max_speed = {5000,4000,5000};
+                  ramp_up_limits = {6000,6000,6000},
+                  ramp_up_thresholds = {30,30,30},
+                  max_speed = {13000,13000,14000};
 const vector<float> max_position = {160,398,0},
-                    min_position = {0,0,-45},
+                    min_position = {0,0,-52},
                     axis_sign = {-1,1,1},
-                    axis_position_offset = {0,398,0};
+                    axis_position_offset = {0,398,-1};
 
 enum REGISTER {
         setpoint = 0x0,
@@ -249,7 +253,9 @@ enum REGISTER {
         ticks_per_millisecond = 0xE,
         enable = 0xF,
         ms = 0x10,
-        result_freq = 0x11
+        result_freq = 0x11,
+        ramp_up_limit = 0x12,
+        ramp_up_threshold = 0x13
 };
 enum MODESELECT {
         STEP_8,
