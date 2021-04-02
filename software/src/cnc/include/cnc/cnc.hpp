@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <sensor_msgs/ChannelFloat32.h>
 #include <std_msgs/ColorRGBA.h>
+#include <std_msgs/Int32.h>
 
 using namespace std;
 
@@ -35,12 +36,14 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
         position_sub = nh->subscribe("/motor/command",1,&CNC::PositionCommandCallback,this);
         neopixel_single_sub = nh->subscribe("/neopixel/single",1,&CNC::NeopixelSingleCallback,this);
         neopixel_all_sub = nh->subscribe("/neopixel/all",1,&CNC::NeopixelAllCallback,this);
+        cleanser_sub = nh->subscribe("/cleanser",1,&CNC::CleanserCallback,this);
 
         number_of_motors = stepper_base.size();
 
         position_offset.resize(number_of_motors);
 
-        for(int i=number_of_motors-1; i>=0; i--) {
+        // motor axis initialization
+        for(int i=number_of_axis-1; i>=0; i--) {
                 IOWR(stepper_base[i],REGISTER::ms,STEP_16);
                 IOWR(stepper_base[i],REGISTER::ramp_up_limit,ramp_up_limits[i]);
                 IOWR(stepper_base[i],REGISTER::ramp_up_threshold,ramp_up_thresholds[i]);
@@ -52,6 +55,12 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
                 IOWR(stepper_base[i],REGISTER::enable,1);
                 Zero(i);
         }
+
+        // cleanser stepper
+        IOWR(stepper_base[3],REGISTER::ms,STEP_16);
+        IOWR(stepper_base[3],REGISTER::Kp,1);
+        IOWR(stepper_base[3],REGISTER::outputMax,6000);
+        IOWR(stepper_base[3],REGISTER::enable,1);
 
         spinner = boost::shared_ptr<ros::AsyncSpinner>(new ros::AsyncSpinner(0));
         spinner->start();
@@ -78,6 +87,10 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
         }
         ROS_INFO("cnc initialized for %d motors", number_of_motors);
 };
+
+void CleanserCallback(const std_msgs::Int32ConstPtr &msg){
+        IOWR(stepper_base[3],REGISTER::setpoint,msg->data);
+}
 
 bool ZeroService(std_srvs::Trigger::Request &req,std_srvs::Trigger::Response &res){
         ROS_INFO("zero service called");
@@ -184,7 +197,7 @@ void NeopixelSingleCallback(const sensor_msgs::ChannelFloat32ConstPtr &msg){
 ros::NodeHandlePtr nh;
 boost::shared_ptr<ros::AsyncSpinner> spinner;
 ros::Publisher motor_state_pub, pid_state_pub, endswitch_pub;
-ros::Subscriber position_sub, neopixel_single_sub, neopixel_all_sub;
+ros::Subscriber position_sub, neopixel_single_sub, neopixel_all_sub, cleanser_sub;
 ros::ServiceServer zero_srv;
 boost::shared_ptr<std::thread> motor_state_thread;
 sensor_msgs::JointState motor_state;
@@ -193,6 +206,7 @@ vector<control_msgs::PidState> pid_state;
 vector<int32_t*>  stepper_base;
 int32_t *end_switches, *neopixel;
 int number_of_motors = 0, control_mode = -1;
+const int number_of_axis = 3;
 vector<int> position_offset;
 const vector<int> setpoint_delta_axis = {3,4,1},
                   ramp_up_limits = {6000,6000,6000},

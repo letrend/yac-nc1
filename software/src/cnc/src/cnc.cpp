@@ -87,6 +87,9 @@ int main(int argc, char *argv[]) {
     #ifdef STEPPER_POSITION_CONTOLLER_2_BASE
         h2p_lw_stepper_addr.push_back((int32_t*)(virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + STEPPER_POSITION_CONTOLLER_2_BASE ) & ( unsigned long)( HW_REGS_MASK )) ));
     #endif
+    #ifdef STEPPER_POSITION_CONTOLLER_3_BASE
+        h2p_lw_stepper_addr.push_back((int32_t*)(virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + STEPPER_POSITION_CONTOLLER_3_BASE ) & ( unsigned long)( HW_REGS_MASK )) ));
+    #endif
 
     #ifdef ENDSWITCHES_BASE
         h2p_lw_end_switch_addr = (int32_t*)(virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + ENDSWITCHES_BASE ) & ( unsigned long)( HW_REGS_MASK )) );
