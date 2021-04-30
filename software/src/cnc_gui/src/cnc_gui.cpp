@@ -104,7 +104,7 @@ void CNCGUI::initPlugin(qt_gui_cpp::PluginContext &context) {
         motor_command = nh->advertise<geometry_msgs::Vector3>("/motor/command",1);
         neopixel_all_pub = nh->advertise<std_msgs::ColorRGBA>("/neopixel/all",1);
 
-        initCamera(camera_calibration_file_path_lo_res,camera_calibration_file_path_hi_res);
+        initCamera(camera_calibration_file_path_lo_res,camera_calibration_file_path_hi_res,camera_id);
 
         frame.resize(2);
         frame_reticle.resize(2);
@@ -849,7 +849,9 @@ int CNCGUI::getV4L2(string value){
 }
 
 void CNCGUI::setV4L2(string name, int value){
-        exec(("v4l2-ctl -c " + name + "=" + std::to_string(value)).c_str());
+        char str[300];
+        sprintf(str,"v4l2-ctl --device=%d -c %s=%d",camera_id,name.c_str(),value);
+        exec(str);
 }
 
 void CNCGUI::AutoFocusMonitorThread(){
@@ -952,6 +954,8 @@ void CNCGUI::FrameGrabberThread(){
 
 void CNCGUI::drawImage(Mat &img, QLabel* label){
         Mat img_cpy;
+        if(img.empty())
+                return;
         cv::cvtColor(img,img_cpy,CV_BGR2RGB); //Qt reads in RGB whereas CV in BGR
         cv::resize(img_cpy, img_cpy, cv::Size(label->width(),label->height()), 0, 0, CV_INTER_LINEAR);
         QImage imdisplay((uchar*)img_cpy.data, img_cpy.cols, img_cpy.rows, img_cpy.step, QImage::Format_RGB888); //Converts the CV image into Qt standard format

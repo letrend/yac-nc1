@@ -106,7 +106,12 @@ int main(int argc, char* argv[])
         // open the default camera using default API
         // cap.open(0);
         // OR advance usage: select any API backend
+        const std::string &cameraID = input.getCmdOption("-id");
         int deviceID = 0;         // 0 = open default camera
+        if(!cameraID.empty()) {
+                deviceID = stoi(cameraID.c_str());
+        }
+
         int apiID = cv::CAP_ANY;  // 0 = autodetect default API
         // open selected camera using selected API
         cap.open(deviceID, apiID);
@@ -122,7 +127,7 @@ int main(int argc, char* argv[])
 
         // check if we succeeded
         if (!cap.isOpened()) {
-                cerr << "ERROR! Unable to open camera\n";
+                cerr << "ERROR! Unable to open camera with ID " << deviceID << endl;
                 return -1;
         }
         setV4L2("focus_auto",1);

@@ -85,7 +85,7 @@ geometry_msgs::Vector3 optical_reference_pos,
                        cleanser_pos;
 vector<geometry_msgs::Vector3> ninety_six_well_top_left, ninety_six_well_bottom_right;
 float ninety_six_well_distance = 0;
-int slice = 0, cube = 0;
+int slice = 0, cube = 0, camera_id = 0;
 int ninety_six_well_counter = 0;
 string camera_calibration_file_path_lo_res = "",
        camera_calibration_file_path_hi_res = "";

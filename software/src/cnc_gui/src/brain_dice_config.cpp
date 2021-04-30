@@ -38,6 +38,7 @@ bool BrainDiceConfig::readConfig(const string &filepath){
                 slice = config["dicing_state"]["slice"].as<int>();
                 cube = config["dicing_state"]["cube"].as<int>();
                 ninety_six_well_counter = config["dicing_state"]["well_counter"].as<int>();
+                camera_id = config["camera"]["id"].as<int>();
                 camera_calibration_file_path_lo_res =
                         config["camera"]["calibration_file_path"]["lo_res"].as<string>();
                 camera_calibration_file_path_hi_res =

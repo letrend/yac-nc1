@@ -34,7 +34,7 @@ using namespace std;
 
 class Camera {
 public:
-bool initCamera(string lo_res_calib_file_path,string hi_res_calib_file_path);
+bool initCamera(string lo_res_calib_file_path,string hi_res_calib_file_path, int deviceID=0);
 bool grabFrame(Mat &img, int resolution=0);
 bool grabFrame(Mat &img, Mat &img_raw, int resolution);
 bool detectQRCode(Mat &img, vector<vpImagePoint> &qr_code_corners,

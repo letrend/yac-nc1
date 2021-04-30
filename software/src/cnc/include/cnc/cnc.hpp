@@ -95,8 +95,8 @@ void CleanserCallback(const std_msgs::Int32ConstPtr &msg){
 bool ZeroService(std_srvs::Trigger::Request &req,std_srvs::Trigger::Response &res){
         ROS_INFO("zero service called");
         bool timeout = false;
-        for(int motor=number_of_motors-1; motor>=0; motor--) {
-                if(!Zero(motor)) {
+        for(int axis=number_of_axis-1; axis>=0; axis--) {
+                if(!Zero(axis)) {
                         timeout = true;
                 }
         }

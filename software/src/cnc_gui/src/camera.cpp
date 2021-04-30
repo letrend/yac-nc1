@@ -1,8 +1,8 @@
 #include "camera.hpp"
 
 
-bool Camera::initCamera(string lo_res_calib_file_path, string hi_res_calib_file_path){
-        ROS_INFO("initializing camera");
+bool Camera::initCamera(string lo_res_calib_file_path, string hi_res_calib_file_path, int deviceID){
+        ROS_INFO("initializing camera with id %d",deviceID);
         FileStorage fs_lo, fs_hi;
         fs_lo.open(lo_res_calib_file_path, FileStorage::READ);
         fs_hi.open(hi_res_calib_file_path, FileStorage::READ);
@@ -29,7 +29,7 @@ bool Camera::initCamera(string lo_res_calib_file_path, string hi_res_calib_file_
         ROS_INFO_STREAM("cameraMatrix: " << cameraMatrix_hi_res);
         ROS_INFO_STREAM("distCoeffs: " << endl << distCoeffs_hi_res);
         try {
-                int deviceID = 0;                       // 0 = open default camera
+                // 0 = open default camera
                 int apiID = cv::CAP_ANY;                 // 0 = autodetect default API
                 // open selected camera using selected API
                 cap.open(deviceID, apiID);
