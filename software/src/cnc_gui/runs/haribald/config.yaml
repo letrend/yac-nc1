@@ -1,61 +1,61 @@
 optical_reference:
   pos:
     z: 5
-    y: 159.1932067871094
-    x: 71.73311614990234
-cnc:
-  dimension:
-    y: 397
-    x: 160
-tool:
-  dwell_on_surface: 1
-  dispense_repetitions: 3
-  dispense_depth: 31
-  cut_depth: 25
-  size: 6.3
-  type: 0
-  camera_offset:
-    y: 47.5
-    x: 4.5
-brain_sample:
-  top_left:
-    y: 164.2446899414062
-    x: 13.14581394195557
-    z: -26.27218818664551
-  bottom_right:
-    y: 51.08929443359375
-    x: 157.2059326171875
-    z: -26.15992164611816
-camera:
-  calibration_file_path:
-    hi_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_high_resolution.xml
-    lo_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_low_resolution.xml
-  focus_absolute: 107
-  exposure_absolute: 30
-  id: 2
-  pixel_per_mm:
-    hi_res:
-      y: 70.00929
-      x: 70.83725
-    lo_res:
-      x: 11.4246
-      y: 10.72961
-cleanser:
-  pos:
-    x: 0
-    y: 0
-    z: 0
+    x: 9.577602386474609
+    y: 224.6695556640625
 dicing_state:
-  cube: 192
+  slice: 0
+  cube: 0
   well_counter: 0
-  slice: 1
+brain_sample:
+  bottom_right:
+    x: 144.6758880615234
+    y: 106.9739685058594
+    z: -26.14680099487305
+  top_left:
+    x: 8.903034210205078
+    y: 232.9096832275391
+    z: -26.26392555236816
 ninety_six_well:
+  top_left:
+    y: [305.9520874023438, 306.3476867675781]
+    x: [7.339571952819824, 92.84495544433594]
+    z: [-5.46409797668457, -5.479650020599365]
   distance: 8.95
   bottom_right:
     y: [207.6770477294922, 207.8145904541016]
     z: [-5.595317840576172, -5.030586242675781]
     x: [69.90138244628906, 155.5355529785156]
-  top_left:
-    y: [305.9520874023438, 306.3476867675781]
-    z: [-5.46409797668457, -5.479650020599365]
-    x: [7.339571952819824, 92.84495544433594]
+tool:
+  dwell_on_surface: 1
+  camera_offset:
+    y: 47.5
+    x: 4.5
+  size: 6.3
+  type: 0
+  dispense_depth: 31
+  dispense_repetitions: 3
+  cut_depth: 25
+camera:
+  calibration_file_path:
+    hi_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_high_resolution.xml
+    lo_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_low_resolution.xml
+  focus_absolute: 77
+  pixel_per_mm:
+    hi_res:
+      y: 55.86497
+      x: 56.39349
+    lo_res:
+      x: 9.06728
+      y: 8.577125
+  id: 2
+  exposure_absolute: 30
+cleanser:
+  pos:
+    y: 0
+    x: 0
+    z: 0
+cnc:
+  dimension:
+    y: 397
+    x: 160

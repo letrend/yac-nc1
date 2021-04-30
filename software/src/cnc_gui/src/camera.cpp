@@ -48,18 +48,29 @@ bool Camera::initCamera(string lo_res_calib_file_path, string hi_res_calib_file_
 
 bool Camera::grabFrame(Mat &img, int res){
         lock_guard<mutex> lock(mux);
-        if(res!=resolution) {
-                changeResolution(res);
-        }
-        cap.read(frame);
-        if(frame.empty())                                 // skip empty frames
+        try {
+                if(res!=resolution) {
+                        changeResolution(res);
+                }
+                ros::Time t0 = ros::Time::now();
+                do {
+                        cap >>frame;
+                        if((ros::Time::now()-t0).toSec()>5) {
+                                ROS_ERROR("grabbing frame timed out");
+                                return false;
+                        }
+                        // ROS_INFO_THROTTLE(1,"reading frame");
+                } while(frame.empty());
+                if(res==LOW_RES)
+                        undistort(frame, frame_undistorted, cameraMatrix_lo_res, distCoeffs_lo_res);
+                else if(res==HIGH_RES)
+                        undistort(frame, frame_undistorted, cameraMatrix_hi_res, distCoeffs_hi_res);
+                rotate(frame_undistorted, img, cv::ROTATE_90_COUNTERCLOCKWISE);
+                return true;
+        }catch(cv::Exception& e) {
+                ROS_ERROR_STREAM_THROTTLE(5,e.what());
                 return false;
-        if(res==LOW_RES)
-                undistort(frame, frame_undistorted, cameraMatrix_lo_res, distCoeffs_lo_res);
-        else if(res==HIGH_RES)
-                undistort(frame, frame_undistorted, cameraMatrix_hi_res, distCoeffs_hi_res);
-        rotate(frame_undistorted, img, cv::ROTATE_90_COUNTERCLOCKWISE);
-        return true;
+        }
 }
 
 bool Camera::grabFrame(Mat &img, Mat &img_raw, int res){
@@ -67,9 +78,15 @@ bool Camera::grabFrame(Mat &img, Mat &img_raw, int res){
         if(res!=resolution) {
                 changeResolution(res);
         }
-        cap.read(img_raw);
-        if(img_raw.empty())                                 // skip empty frames
-                return false;
+        ros::Time t0 = ros::Time::now();
+        do {
+                cap >> img_raw;
+                if((ros::Time::now()-t0).toSec()>5) {
+                        ROS_ERROR("grabbing frame timed out");
+                        return false;
+                }
+                // ROS_INFO_THROTTLE(1,"reading frame");
+        } while(img_raw.empty());
         if(res==LOW_RES)
                 undistort(img_raw, frame_undistorted, cameraMatrix_lo_res, distCoeffs_lo_res);
         else if(res==HIGH_RES)
@@ -125,4 +142,6 @@ void Camera::changeResolution(int res){
                 cap.set(CAP_PROP_FRAME_WIDTH,hi_res.width);
                 cap.set(CAP_PROP_FRAME_HEIGHT,hi_res.height);
         }
+        ros::Duration d(0.1);
+        d.sleep();
 }

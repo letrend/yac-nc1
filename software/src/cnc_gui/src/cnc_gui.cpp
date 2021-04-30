@@ -384,7 +384,7 @@ void CNCGUI::CalibrateCameraThread(){
         if(!checkConfirm())
                 return;
         ui.auto_focus->setChecked(true);
-        ros::Time t0 = ros::Time::now();
+        ros::Time t0 = ros::Time::now(), t1;
         ROS_INFO("waiting for the camera to focus and the qr code to be centered");
         grab_frames = false;
         do {
@@ -422,8 +422,16 @@ void CNCGUI::CalibrateCameraThread(){
                 for(float x_offset = -3; x_offset<=3; x_offset+=3) {
                         msg.x = optical_reference_pos.x+x_offset;
                         WaitForPositionReached(msg,0.1,3);
-                        if(!grabFrame(frame[LOW_RES], LOW_RES))
-                                continue;
+                        t1 = ros::Time::now();
+                        while(!grabFrame(frame[LOW_RES], LOW_RES)) {
+                                ROS_INFO_THROTTLE(1,"grabbing low res camera frame");
+                                if((ros::Time::now()-t1).toSec()>5) {
+                                        ROS_ERROR("grabbing camera frame timed out, aborting calibration, check thy camera");
+                                        ui.auto_focus->setChecked(true);
+                                        grab_frames = true;
+                                        return;
+                                }
+                        }
                         bool detected = detectQRCode(frame[LOW_RES],qr_code_corners,qr_code_pos,qr_code_rot,qr_code_size);
                         if(detected) {
                                 qr_code_side_length_px_y[LOW_RES] += sqrtf(powf(qr_code_corners[1].get_u()-qr_code_corners[0].get_u(),2.0f)+powf(qr_code_corners[1].get_v()-qr_code_corners[0].get_v(),2.0f));
@@ -432,8 +440,16 @@ void CNCGUI::CalibrateCameraThread(){
                                 qr_code_side_length_px_x[LOW_RES] += sqrtf(powf(qr_code_corners[0].get_u()-qr_code_corners[3].get_u(),2.0f)+powf(qr_code_corners[0].get_v()-qr_code_corners[3].get_v(),2.0f));
                                 samples[LOW_RES]+=1;
                         }
-                        if(!grabFrame(frame[HIGH_RES], HIGH_RES))
-                                continue;
+                        t1 = ros::Time::now();
+                        while(!grabFrame(frame[HIGH_RES], HIGH_RES)) {
+                                ROS_INFO_THROTTLE(1,"grabbing high res camera frame");
+                                if((ros::Time::now()-t1).toSec()>5) {
+                                        ROS_ERROR("grabbing camera frame timed out, aborting calibration, check thy camera");
+                                        ui.auto_focus->setChecked(true);
+                                        grab_frames = true;
+                                        return;
+                                }
+                        }
                         detected = detectQRCode(frame[HIGH_RES],qr_code_corners,qr_code_pos,qr_code_rot,qr_code_size);
                         if(detected) {
                                 qr_code_side_length_px_y[HIGH_RES] += sqrtf(powf(qr_code_corners[1].get_u()-qr_code_corners[0].get_u(),2.0f)+powf(qr_code_corners[1].get_v()-qr_code_corners[0].get_v(),2.0f));
@@ -451,10 +467,20 @@ void CNCGUI::CalibrateCameraThread(){
                                  );
                 }
         }
-        pixel_per_mm_x[LOW_RES] = qr_code_side_length_px_x[LOW_RES]/(2*samples[LOW_RES])/(qr_code_size-11); // the actual qr_code corners a inset by 11mm
-        pixel_per_mm_y [LOW_RES]= qr_code_side_length_px_y[LOW_RES]/(2*samples[LOW_RES])/(qr_code_size-11); // the actual qr_code corners a inset by 11mm
-        pixel_per_mm_x[HIGH_RES] = qr_code_side_length_px_x[HIGH_RES]/(2*samples[HIGH_RES])/(qr_code_size-11); // the actual qr_code corners a inset by 11mm
-        pixel_per_mm_y [HIGH_RES]= qr_code_side_length_px_y[HIGH_RES]/(2*samples[HIGH_RES])/(qr_code_size-11); // the actual qr_code corners a inset by 11mm
+        float pixel_per_mm_x_low_res_temp = qr_code_side_length_px_x[LOW_RES]/(2*samples[LOW_RES])/(qr_code_size-11); // the actual qr_code corners a inset by 11mm
+        float pixel_per_mm_y_low_res_temp = qr_code_side_length_px_y[LOW_RES]/(2*samples[LOW_RES])/(qr_code_size-11); // the actual qr_code corners a inset by 11mm
+        float pixel_per_mm_x_high_res_temp = qr_code_side_length_px_x[HIGH_RES]/(2*samples[HIGH_RES])/(qr_code_size-11); // the actual qr_code corners a inset by 11mm
+        float pixel_per_mm_y_high_res_temp = qr_code_side_length_px_y[HIGH_RES]/(2*samples[HIGH_RES])/(qr_code_size-11); // the actual qr_code corners a inset by 11mm
+        if(!isnan(pixel_per_mm_y_high_res_temp)) {
+                pixel_per_mm_x[LOW_RES] = pixel_per_mm_x_low_res_temp;
+                pixel_per_mm_y [LOW_RES]= pixel_per_mm_y_low_res_temp;
+                pixel_per_mm_x[HIGH_RES] = pixel_per_mm_x_high_res_temp;
+                pixel_per_mm_y [HIGH_RES] = pixel_per_mm_y_high_res_temp;
+        }else{
+                ROS_ERROR("pixel width was nan, aborting calibration");
+                grab_frames = true;
+                return;
+        }
         cnc_area_image[LOW_RES] = cv::Mat(cv::Size(int((cnc_x_dim*pixel_per_mm_x[LOW_RES])+lo_res.height),
                                                    int((cnc_y_dim*pixel_per_mm_y[LOW_RES])+lo_res.width)),CV_8UC3);
         cnc_area_image[HIGH_RES] = cv::Mat(cv::Size(int((cnc_x_dim*pixel_per_mm_x[HIGH_RES])+hi_res.height),
@@ -839,7 +865,9 @@ string CNCGUI::exec(const char* cmd) {
 }
 
 int CNCGUI::getV4L2(string value){
-        string val = exec(("v4l2-ctl -C " + value).c_str());
+        char str[300];
+        sprintf(str,"v4l2-ctl --device=%d -C %s",camera_id,value.c_str());
+        string val = exec(str);
         string output = std::regex_replace(
                 val,
                 std::regex("[^0-9]*([0-9]+).*"),
@@ -1016,6 +1044,7 @@ void CNCGUI::scan(){
 }
 
 void CNCGUI::ScanThread(){
+        ROS_INFO("scan thread START");
         ui.auto_focus->setChecked(false);
         // zero();
         geometry_msgs::Vector3 msg;
@@ -1032,7 +1061,7 @@ void CNCGUI::ScanThread(){
                 if(!dir) {
                         for(float x=brain_sample_top_left.x; x<=brain_sample_bottom_right.x+10; x+=x_step) {
                                 msg.x = x;
-                                if(!WaitForPositionReachedSave(msg,0.1,30)) {
+                                if(!WaitForPositionReachedSave(msg,0.2,30)) {
                                         ROS_ERROR("could not reach scan position, aborting scan...");
                                         return;
                                 }
@@ -1065,7 +1094,7 @@ void CNCGUI::ScanThread(){
                 }else{
                         for(float x=brain_sample_bottom_right.x; x>=brain_sample_top_left.x-10; x-=x_step) {
                                 msg.x = x;
-                                if(!WaitForPositionReachedSave(msg,0.1,30)) {
+                                if(!WaitForPositionReachedSave(msg,0.2,30)) {
                                         ROS_ERROR("could not reach scan position, aborting scan...");
                                         return;
                                 }
@@ -1093,6 +1122,7 @@ void CNCGUI::ScanThread(){
                 dir = !dir;
         }
         loadPlanImage();
+        ROS_INFO("scan thread STOP");
 }
 
 void CNCGUI::JoyStickContolThread(){
