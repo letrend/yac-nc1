@@ -121,6 +121,8 @@ bool eventFilter( QObject* watched, QEvent* event );
 void drawImage(Mat &img, QLabel* label);
 bool checkConfirm(int timeout_sec=30);
 bool get96well(int cube, Scalar &color);
+bool checkPause();
+bool checkStop();
 private:
 Ui::CNCGUI ui;
 QColor color_pallette[16] = {Qt::blue, Qt::red, Qt::green, Qt::cyan, Qt::magenta, Qt::darkGray, Qt::darkRed, Qt::darkGreen,
@@ -164,4 +166,5 @@ vector<vector<int> > ninety_six_well_content;
 int well_counter = 0;
 vector<Point2f> ninety_six_well_pos;
 bool tool_toggle = false;
+bool pause_active = false, stop_active = false;
 };

@@ -627,7 +627,10 @@ void CNCGUI::CalibrateBrainThread(){
 
 void CNCGUI::DryRunThread(){
         ROS_INFO("dry run START");
+        ui.pause->setEnabled(true);
+        ui.stop->setEnabled(true);
         well_counter = 0;
+        bool abort= false;
         for(int i=0; i<ninety_six_well_content.size(); i++) {
                 for(int j=0; j<ninety_six_well_content[i].size(); j++) {
                         geometry_msgs::Vector3 msg = brain_sample_top_left;
@@ -639,47 +642,59 @@ void CNCGUI::DryRunThread(){
                         msg.z = 0;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
-                                return;
+                                abort = true;
+                                break;
                         }
                         ROS_INFO("cube %d of ninety_six_well %ld at camera position %.1f %.1f",
                                  cube_target,ninety_six_well_IDs[i],pos.x,pos.y);
                         drawPlan();
-                        if(!checkConfirm(60)) // wait 60 seconds
-                                return;
+                        if(!checkConfirm(60)) { // wait 60 seconds
+                                abort = true;
+                                break;
+                        }
                         //// sample tool position check
                         msg.x += tool_camera_offset_x;
                         msg.y += tool_camera_offset_y;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
-                                return;
+                                abort = true;
+                                break;
                         }
                         MoveTool(brain_sample_top_left.z);
                         ROS_INFO("cube %d of ninety_six_well %ld at tool position %.1f %.1f",
                                  cube_target,ninety_six_well_IDs[i],pos.x,pos.y);
-                        if(!checkConfirm(60)) // wait 60 seconds
-                                return;
+                        if(!checkConfirm(60)) { // wait 60 seconds
+                                abort = true;
+                                break;
+                        }
                         //// 96well camera position check
                         msg.x = ninety_six_well_pos[well_counter].x;
                         msg.y = ninety_six_well_pos[well_counter].y;
                         msg.z = 0;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
-                                return;
+                                abort = true;
+                                break;
                         }
                         ROS_INFO("well %d at camera position %.1f %.1f",well_counter,msg.x,msg.y);
-                        if(!checkConfirm(60)) // wait 60 seconds
-                                return;
+                        if(!checkConfirm(60)) { // wait 60 seconds
+                                abort = true;
+                                break;
+                        }
                         //// 96well tool position check
                         msg.x += tool_camera_offset_x;
                         msg.y += tool_camera_offset_y;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
-                                return;
+                                abort = true;
+                                break;
                         }
                         MoveTool(ninety_six_well_top_left[0].z);
                         ROS_INFO("well %d at tool position %.1f %.1f",well_counter,msg.x,msg.y);
-                        if(!checkConfirm(60)) // wait 60 seconds
-                                return;
+                        if(!checkConfirm(60)) { // wait 60 seconds
+                                abort = true;
+                                break;
+                        }
 
                         well_counter++;
                         if(well_counter==96) {
@@ -693,8 +708,15 @@ void CNCGUI::DryRunThread(){
                                 Clean();
                         }
                 }
+                if(abort) {
+                        break;
+                }
         }
-
+        if(abort) {
+                MoveToolSave(0);
+                ui.pause->setEnabled(false);
+                ui.stop->setEnabled(false);
+        }
 
         ROS_INFO("dry run STOP");
 }
@@ -1702,11 +1724,27 @@ void CNCGUI::run(){
 }
 
 void CNCGUI::pause(){
-        ROS_INFO("pause button clicked");
+        if(ui.pause->isChecked()) {
+                pause_active = false;
+                ui.pause->setStyleSheet("background: lightgray");
+        }else{
+                pause_active = true;
+                ui.pause->setStyleSheet("background: yellow");
+        }
 }
 
 void CNCGUI::stop(){
-        ROS_INFO("stop button clicked");
+        if(ui.stop->isChecked()) {
+                stop_active = false;
+                ui.stop->setStyleSheet("background: lightgray");
+                if(ui.pause->isChecked()) {
+                        ui.pause->setChecked(false);
+                        ui.pause->setStyleSheet("background: lightgray");
+                }
+        }else{
+                stop_active = true;
+                ui.stop->setStyleSheet("background: red");
+        }
 }
 
 void CNCGUI::prev_slice(){

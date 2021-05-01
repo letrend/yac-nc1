@@ -176,21 +176,21 @@ void PositionCommandCallback(const geometry_msgs::Vector3ConstPtr &msg){
                         IOWR(stepper_base[1],REGISTER::setpoint,int((msg->y*axis_sign[1]-axis_position_offset[1])/MM_PER_TICK));
                 else{
                         if(msg->y>max_position[1]) {
-                                IOWR(stepper_base[1],REGISTER::setpoint,int((max_position[1]*axis_sign[0]-axis_position_offset[0])/MM_PER_TICK));
+                                IOWR(stepper_base[1],REGISTER::setpoint,int((max_position[1]*axis_sign[1]-axis_position_offset[1])/MM_PER_TICK));
                         }else if(msg->y<min_position[1]) {
-                                IOWR(stepper_base[1],REGISTER::setpoint,int((min_position[1]*axis_sign[0]-axis_position_offset[0])/MM_PER_TICK));
+                                IOWR(stepper_base[1],REGISTER::setpoint,int((min_position[1]*axis_sign[1]-axis_position_offset[1])/MM_PER_TICK));
                         }
-                        ROS_WARN_THROTTLE(1,"position command=%f for y-axis exceeds softlimits (%f,%f), ignoring...", msg->y, min_position[1], max_position[1]);
+                        ROS_WARN_THROTTLE(1,"position command=%f for y-axis exceeds softlimits (%f,%f)", msg->y, min_position[1], max_position[1]);
                 }
                 if(msg->z<=max_position[2] && msg->z>=min_position[2]) // softlimits
                         IOWR(stepper_base[2],REGISTER::setpoint,int((msg->z*axis_sign[2]-axis_position_offset[2])/MM_PER_TICK));
                 else{
                         if(msg->z>max_position[2]) {
-                                IOWR(stepper_base[2],REGISTER::setpoint,int((max_position[2]*axis_sign[0]-axis_position_offset[0])/MM_PER_TICK));
+                                IOWR(stepper_base[2],REGISTER::setpoint,int((max_position[2]*axis_sign[2]-axis_position_offset[2])/MM_PER_TICK));
                         }else if(msg->z<min_position[2]) {
-                                IOWR(stepper_base[2],REGISTER::setpoint,int((min_position[2]*axis_sign[0]-axis_position_offset[0])/MM_PER_TICK));
+                                IOWR(stepper_base[2],REGISTER::setpoint,int((min_position[2]*axis_sign[2]-axis_position_offset[2])/MM_PER_TICK));
                         }
-                        ROS_WARN_THROTTLE(1,"position command=%f for z-axis exceeds softlimits (%f,%f), ignoring...", msg->z, min_position[2], max_position[2]);
+                        ROS_WARN_THROTTLE(1,"position command=%f for z-axis exceeds softlimits (%f,%f)", msg->z, min_position[2], max_position[2]);
                 }
         }
 }
