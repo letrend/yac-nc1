@@ -10,3 +10,6 @@
 [submodule "software/de10-nano-soc/ip/--force"]
 	path = software/de10-nano-soc/ip/--force
 	url = https://github.com/letrend/stepper_fpga
+[submodule "docs/sw_documentation_template"]
+	path = docs/sw_documentation_template
+	url = https://github.com/letrend/sw_documentation_template
