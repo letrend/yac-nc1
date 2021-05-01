@@ -231,7 +231,7 @@ const vector<int> setpoint_delta_axis = {3,4,1},
                   ramp_up_thresholds = {30,30,30},
                   max_speed = {13000,13000,14000};
 const vector<float> max_position = {160,398,0},
-                    min_position = {0,0,-52},
+                    min_position = {0,34.9,-52},
                     axis_sign = {-1,1,1},
                     axis_position_offset = {0,398,0};
 

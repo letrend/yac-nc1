@@ -1,36 +1,36 @@
 optical_reference:
   pos:
     z: 5
-    x: 9.577602386474609
-    y: 224.6695556640625
+    x: 69.02220916748047
+    y: 134.3770751953125
 dicing_state:
   slice: 0
-  cube: 0
+  cube: 1
   well_counter: 0
 brain_sample:
   bottom_right:
-    x: 144.6758880615234
-    y: 106.9739685058594
-    z: -26.14680099487305
+    x: 155.8320159912109
+    y: 35.30889892578125
+    z: -26.14339828491211
   top_left:
-    x: 8.903034210205078
-    y: 232.9096832275391
-    z: -26.26392555236816
+    x: 2.3891761302948
+    y: 218.4059906005859
+    z: -26.25906562805176
 ninety_six_well:
   top_left:
-    y: [305.9520874023438, 306.3476867675781]
-    x: [7.339571952819824, 92.84495544433594]
-    z: [-5.46409797668457, -5.479650020599365]
+    y: [349.9035034179688, 350.0186767578125]
+    x: [10.29882621765137, 94.74958801269531]
+    z: [-9.26315975189209, -9.282600402832031]
   distance: 8.95
   bottom_right:
-    y: [207.6770477294922, 207.8145904541016]
-    z: [-5.595317840576172, -5.030586242675781]
-    x: [69.90138244628906, 155.5355529785156]
+    y: [251.4656524658203, 251.5968780517578]
+    z: [-9.329742431640625, -8.875818252563477]
+    x: [71.56544494628906, 156.0579986572266]
 tool:
   dwell_on_surface: 1
   camera_offset:
-    y: 47.5
-    x: 4.5
+    y: 45
+    x: 6
   size: 6.3
   type: 0
   dispense_depth: 31
@@ -40,26 +40,26 @@ camera:
   calibration_file_path:
     hi_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_high_resolution.xml
     lo_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_low_resolution.xml
-  focus_absolute: 77
+  focus_absolute: 81
   pixel_per_mm:
     hi_res:
-      y: 55.86497
-      x: 56.39349
+      y: 50.33955
+      x: 50.54678
     lo_res:
-      x: 9.06728
-      y: 8.577125
+      x: 8.105807
+      y: 7.691703
   id: 2
   exposure_absolute: 30
 cleanser:
   pos:
-    y: 42.82098388671875
-    x: 48.58639144897461
-    z: -6.518718242645264
+    y: 43.66079711914062
+    x: 48.5820198059082
+    z: -6.51677417755127
   time: 5
   intensity: 100
   strategy: 0
   frequency: 1
-  tool_depth: 35.8702
+  tool_depth: 35.86631
   dwell_after_clean: 3
 cnc:
   dimension:

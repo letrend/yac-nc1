@@ -648,9 +648,11 @@ void CNCGUI::DryRunThread(){
                         ROS_INFO("cube %d of ninety_six_well %ld at camera position %.1f %.1f",
                                  cube_target,ninety_six_well_IDs[i],pos.x,pos.y);
                         drawPlan();
-                        if(!checkConfirm(60)) { // wait 60 seconds
-                                abort = true;
-                                break;
+                        if(!ui.confirmAll->isChecked()) {
+                                if(!checkConfirm(60)) { // wait 60 seconds
+                                        abort = true;
+                                        break;
+                                }
                         }
                         //// sample tool position check
                         msg.x += tool_camera_offset_x;
@@ -663,9 +665,11 @@ void CNCGUI::DryRunThread(){
                         MoveTool(brain_sample_top_left.z);
                         ROS_INFO("cube %d of ninety_six_well %ld at tool position %.1f %.1f",
                                  cube_target,ninety_six_well_IDs[i],pos.x,pos.y);
-                        if(!checkConfirm(60)) { // wait 60 seconds
-                                abort = true;
-                                break;
+                        if(!ui.confirmAll->isChecked()) {
+                                if(!checkConfirm(60)) { // wait 60 seconds
+                                        abort = true;
+                                        break;
+                                }
                         }
                         //// 96well camera position check
                         msg.x = ninety_six_well_pos[well_counter].x;
@@ -677,9 +681,11 @@ void CNCGUI::DryRunThread(){
                                 break;
                         }
                         ROS_INFO("well %d at camera position %.1f %.1f",well_counter,msg.x,msg.y);
-                        if(!checkConfirm(60)) { // wait 60 seconds
-                                abort = true;
-                                break;
+                        if(!ui.confirmAll->isChecked()) {
+                                if(!checkConfirm(60)) { // wait 60 seconds
+                                        abort = true;
+                                        break;
+                                }
                         }
                         //// 96well tool position check
                         msg.x += tool_camera_offset_x;
@@ -691,18 +697,33 @@ void CNCGUI::DryRunThread(){
                         }
                         MoveTool(ninety_six_well_top_left[0].z);
                         ROS_INFO("well %d at tool position %.1f %.1f",well_counter,msg.x,msg.y);
-                        if(!checkConfirm(60)) { // wait 60 seconds
-                                abort = true;
-                                break;
+                        if(!ui.confirmAll->isChecked()) {
+                                if(!checkConfirm(60)) { // wait 60 seconds
+                                        abort = true;
+                                        break;
+                                }
                         }
 
                         well_counter++;
                         if(well_counter==96) {
                                 ROS_INFO("first 96well full");
-                        }
-                        if(well_counter==96*2) {
+                        }else if(well_counter==96*2) {
                                 ROS_INFO("second 96well full, now would be a good time to change them");
+                                Clean();
                                 well_counter=0;
+                                QMessageBox msgBox;
+                                msgBox.setText("96 wells are full");
+                                msgBox.setInformativeText("Hit OK to continue, once you replaced them");
+                                msgBox.setStandardButtons(QMessageBox::Ok |QMessageBox::Cancel);
+                                msgBox.setDefaultButton(QMessageBox::Cancel);
+                                int ret = msgBox.exec();
+                                if(ret==QMessageBox::Ok) {
+                                        ROS_INFO("resuming...");
+                                }else{
+                                        ROS_INFO("aborting...");
+                                        abort = true;
+                                        break;
+                                }
                         }
                         if(well_counter%cleanser_frequency==0) {
                                 Clean();
@@ -713,16 +734,18 @@ void CNCGUI::DryRunThread(){
                 }
         }
         if(abort) {
-                MoveToolSave(0);
                 ui.pause->setEnabled(false);
                 ui.stop->setEnabled(false);
         }
-
+        MoveToolSave(0);
         ROS_INFO("dry run STOP");
 }
 
 void CNCGUI::RunThread(){
         ROS_INFO("run START");
+        bool abort = false;
+        ui.pause->setEnabled(true);
+        ui.stop->setEnabled(true);
         for(int i=cube/96; i<ninety_six_well_content.size(); i++) {
                 for(int j=cube%96; j<ninety_six_well_content[i].size(); j++) {
                         geometry_msgs::Vector3 msg = brain_sample_top_left;
@@ -735,23 +758,29 @@ void CNCGUI::RunThread(){
                         msg.z = 0;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
-                                return;
+                                abort = true;
+                                break;
                         }
                         if(!MoveToolSave(brain_sample_top_left.z)) {
-                                return;
+                                abort = true;
+                                break;
                         }
                         if(!ui.confirmAll->isChecked()) {
                                 ROS_INFO("hit confirm to perform cutting move");
-                                if(!checkConfirm(60)) // wait 60 seconds
-                                        return;
+                                if(!checkConfirm(60)) { // wait 60 seconds
+                                        abort = true;
+                                        break;
+                                }
                         }
                         ROS_INFO("cutting to depth %.1f", cut_depth);
                         if(!MoveToolSave(brain_sample_top_left.z-cut_depth)) {
-                                return;
+                                abort = true;
+                                break;
                         }
                         ROS_INFO("returning to surface");
                         if(!MoveToolSave(brain_sample_top_left.z)) {
-                                return;
+                                abort = true;
+                                break;
                         }
                         ROS_INFO("dwelling on surface for %.1f seconds",dwell_on_surface);
                         ros::Duration dwell(dwell_on_surface);
@@ -764,43 +793,68 @@ void CNCGUI::RunThread(){
                         msg.z = 0;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
-                                return;
+                                abort = true;
+                                break;
                         }
                         if(!MoveToolSave(ninety_six_well_top_left[0].z)) {
-                                return;
+                                abort = true;
+                                break;
                         }
                         if(!ui.confirmAll->isChecked()) {
                                 ROS_INFO("hit confirm to perform dispense move");
-                                if(!checkConfirm(60)) // wait 60 seconds
-                                        return;
+                                if(!checkConfirm(60)) { // wait 60 seconds
+                                        abort = true;
+                                        break;
+                                }
                         }
                         for(int rep=0; rep<dispense_repetitions; rep++) {
                                 if(!MoveToolSave(ninety_six_well_top_left[0].z-dispense_depth)) {
-                                        return;
+                                        abort = true;
+                                        break;
                                 }
                                 if(!MoveToolSave(ninety_six_well_top_left[0].z)) {
-                                        return;
+                                        abort = true;
+                                        break;
                                 }
                         }
 
                         cube++;
                         ninety_six_well_counter++;
-                        if(ninety_six_well_counter==96) {
-                                ROS_INFO("first 96well full");
-                        }
-                        if(ninety_six_well_counter==96*2) {
-                                ROS_INFO("second 96well full, now would be a good time to change them");
-                                ninety_six_well_counter=0;
-                        }
                         Q_EMIT updateDicingConfig();
                         Q_EMIT updateButtonStates();
-                        if(well_counter%cleanser_frequency==0) {
+                        if(ninety_six_well_counter==96) {
+                                ROS_INFO("first 96well full");
+                        }else if(ninety_six_well_counter==96*2) {
+                                ROS_INFO("second 96well full, now would be a good time to change them");
+                                Clean();
+                                ninety_six_well_counter=0;
+                                QMessageBox msgBox;
+                                msgBox.setText("96 wells are full");
+                                msgBox.setInformativeText("Hit OK to continue, once you replaced them");
+                                msgBox.setStandardButtons(QMessageBox::Ok |QMessageBox::Cancel);
+                                msgBox.setDefaultButton(QMessageBox::Cancel);
+                                int ret = msgBox.exec();
+                                if(ret==QMessageBox::Ok) {
+                                        ROS_INFO("resuming...");
+                                }else{
+                                        ROS_INFO("aborting...");
+                                        abort = true;
+                                        break;
+                                }
+                        }
+                        if(ninety_six_well_counter%cleanser_frequency==0) {
                                 Clean();
                         }
                 }
+                if(abort) {
+                        break;
+                }
         }
-
-
+        MoveToolSave(0);
+        if(abort) {
+                ui.pause->setEnabled(false);
+                ui.stop->setEnabled(false);
+        }
         ROS_INFO("run STOP");
 }
 
@@ -815,17 +869,19 @@ bool CNCGUI::checkConfirm(int timeout_sec){
                         ROS_WARN("abort");
                         ui.confirm->setChecked(false);
                         ui.abort->setChecked(false);
+                        ui.confirm->setStyleSheet("background-color: lightgray; border: none;");
+                        ui.abort->setStyleSheet("background-color: lightgray; border: none;");
                         return false;
                 }
                 if((ros::Time::now()-t1).toSec()>1) {
                         toggle = !toggle;
                         t1 = ros::Time::now();
                         if(toggle) {
-                                ui.confirm->setStyleSheet("background: green");
-                                ui.abort->setStyleSheet("background: lightgray");
+                                ui.confirm->setStyleSheet("background-color: green; border: none;");
+                                ui.abort->setStyleSheet("background-color: lightgray; border: none;");
                         }else{
-                                ui.confirm->setStyleSheet("background: lightgray");
-                                ui.abort->setStyleSheet("background: red");
+                                ui.confirm->setStyleSheet("background-color: lightgray; border: none;");
+                                ui.abort->setStyleSheet("background-color: red; border: none;");
                         }
                 }
         }
@@ -1092,6 +1148,10 @@ void CNCGUI::scan(){
                 int ret = msgBox.exec();
                 if(ret==QMessageBox::Yes) {
                         clearSlice(slice);
+                        cubes.clear();
+                        cube_active.clear();
+                        ninety_six_well_IDs.clear();
+                        ninety_six_well_content.clear();
                 }else{
                         ROS_INFO("abort scan");
                         return;
