@@ -97,4 +97,7 @@ int tool_type = 0;
 float tool_size = 5;
 float cut_depth = 0, dwell_on_surface = 0, dispense_depth = 0;
 int dispense_repetitions = 0;
+float cleanser_time = 0, cleanser_intensity = 0, cleanser_tool_depth = 0,
+      cleanser_dwell_after_clean =0;
+int cleanser_strategy = 0, cleanser_frequency = 0;
 };

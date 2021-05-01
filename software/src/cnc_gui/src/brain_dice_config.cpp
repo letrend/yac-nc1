@@ -62,6 +62,15 @@ bool BrainDiceConfig::readConfig(const string &filepath){
                 optical_reference_pos.x = config["optical_reference"]["pos"]["x"].as<float>();
                 optical_reference_pos.y = config["optical_reference"]["pos"]["y"].as<float>();
                 optical_reference_pos.z = config["optical_reference"]["pos"]["z"].as<float>();
+                cleanser_pos.x = config["cleanser"]["pos"]["x"].as<float>();
+                cleanser_pos.y = config["cleanser"]["pos"]["y"].as<float>();
+                cleanser_pos.z = config["cleanser"]["pos"]["z"].as<float>();
+                cleanser_time = config["cleanser"]["time"].as<float>();
+                cleanser_intensity = config["cleanser"]["intensity"].as<float>();
+                cleanser_strategy = config["cleanser"]["strategy"].as<int>();
+                cleanser_frequency = config["cleanser"]["frequency"].as<int>();
+                cleanser_tool_depth = config["cleanser"]["tool_depth"].as<float>();
+                cleanser_dwell_after_clean = config["cleanser"]["dwell_after_clean"].as<float>();
                 config_file_path = fs::path(filepath);
                 root_folder = config_file_path.parent_path();
                 ROS_INFO_STREAM("root folder: " <<root_folder.string());
@@ -117,6 +126,7 @@ bool BrainDiceConfig::writeConfig(const string &filepath){
         config["cleanser"]["pos"]["x"] = cleanser_pos.x;
         config["cleanser"]["pos"]["y"] = cleanser_pos.y;
         config["cleanser"]["pos"]["z"] = cleanser_pos.z;
+        config["cleanser"]["tool_depth"] = cleanser_tool_depth;
         fout << config;
 
         return true;

@@ -52,9 +52,15 @@ camera:
   exposure_absolute: 30
 cleanser:
   pos:
-    y: 0
-    x: 0
-    z: 0
+    y: 42.82098388671875
+    x: 48.58639144897461
+    z: -6.518718242645264
+  time: 5
+  intensity: 100
+  strategy: 0
+  frequency: 1
+  tool_depth: 35.8702
+  dwell_after_clean: 3
 cnc:
   dimension:
     y: 397

@@ -63,7 +63,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -2066,6 +2066,22 @@
        <string>swap</string>
       </property>
      </widget>
+    </widget>
+    <widget class="QPushButton" name="clean">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>90</y>
+       <width>71</width>
+       <height>101</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>clean</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
     </widget>
    </widget>
    <widget class="QPushButton" name="auto_focus">

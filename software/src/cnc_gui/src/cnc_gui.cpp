@@ -72,6 +72,7 @@ void CNCGUI::initPlugin(qt_gui_cpp::PluginContext &context) {
         QObject::connect(ui.swap_96well, SIGNAL(pressed()), this, SLOT(swap_96well()));
         QObject::connect(ui.auto_focus, SIGNAL(clicked()), this, SLOT(auto_focus()));
         QObject::connect(ui.lights, SIGNAL(clicked()), this, SLOT(lights()));
+        QObject::connect(ui.clean, SIGNAL(clicked()), this, SLOT(clean()));
 
         QObject::connect(ui.x_plus, SIGNAL(pressed()), this, SLOT(move()));
         QObject::connect(ui.x_minus, SIGNAL(pressed()), this, SLOT(move()));
@@ -103,6 +104,7 @@ void CNCGUI::initPlugin(qt_gui_cpp::PluginContext &context) {
         status_subscriber = nh->subscribe("/motor/state",1,&CNCGUI::StatusReceiver,this);
         motor_command = nh->advertise<geometry_msgs::Vector3>("/motor/command",1);
         neopixel_all_pub = nh->advertise<std_msgs::ColorRGBA>("/neopixel/all",1);
+        cleanser_pub = nh->advertise<std_msgs::Int32>("/cleanser",1);
 
         initCamera(camera_calibration_file_path_lo_res,camera_calibration_file_path_hi_res,camera_id);
 
@@ -501,7 +503,7 @@ void CNCGUI::CalibrateCleanserThread(){
         ROS_INFO("cleanser calibration START");
         ROS_INFO("moveing to saved cleanser position %.1f %.1f %.1f",
                  cleanser_pos.x, cleanser_pos.y, cleanser_pos.z);
-        WaitForPositionReachedSave(cleanser_pos,0.01,10);
+        WaitForPositionReachedSave(cleanser_pos,0.1,120);
         if(!checkConfirm())
                 return;
 
@@ -509,6 +511,13 @@ void CNCGUI::CalibrateCleanserThread(){
         cleanser_pos.y = values["pos_y"].back();
         cleanser_pos.z = values["pos_z"].back();
         Q_EMIT updateDicingConfig();
+        ROS_INFO("manually move the tool into the cleanser to the desired depth");
+        MoveToolSave(cleanser_pos.z-cleanser_tool_depth);
+        if(!checkConfirm())
+                return;
+        cleanser_tool_depth = cleanser_pos.z-values["pos_z"].back();
+        Q_EMIT updateDicingConfig();
+        MoveToolSave(0);
         ROS_INFO("cleanser calibration STOP");
 }
 
@@ -680,6 +689,9 @@ void CNCGUI::DryRunThread(){
                                 ROS_INFO("second 96well full, now would be a good time to change them");
                                 well_counter=0;
                         }
+                        if(well_counter%cleanser_frequency==0) {
+                                Clean();
+                        }
                 }
         }
 
@@ -760,6 +772,9 @@ void CNCGUI::RunThread(){
                         }
                         Q_EMIT updateDicingConfig();
                         Q_EMIT updateButtonStates();
+                        if(well_counter%cleanser_frequency==0) {
+                                Clean();
+                        }
                 }
         }
 
@@ -768,9 +783,10 @@ void CNCGUI::RunThread(){
 }
 
 bool CNCGUI::checkConfirm(int timeout_sec){
-        ros::Time t0 = ros::Time::now();
+        ros::Time t0 = ros::Time::now(), t1 = ros::Time::now();
         ui.confirm->setChecked(false);
         ui.abort->setChecked(false);
+        bool toggle = false;
         while(!ui.confirm->isChecked()) {
                 ROS_INFO_THROTTLE(1,"waiting for confirm or abort");
                 if(ui.abort->isChecked() || (ros::Time::now()-t0).toSec()>timeout_sec) {
@@ -779,9 +795,22 @@ bool CNCGUI::checkConfirm(int timeout_sec){
                         ui.abort->setChecked(false);
                         return false;
                 }
+                if((ros::Time::now()-t1).toSec()>1) {
+                        toggle = !toggle;
+                        t1 = ros::Time::now();
+                        if(toggle) {
+                                ui.confirm->setStyleSheet("background: green");
+                                ui.abort->setStyleSheet("background: lightgray");
+                        }else{
+                                ui.confirm->setStyleSheet("background: lightgray");
+                                ui.abort->setStyleSheet("background: red");
+                        }
+                }
         }
         ui.confirm->setChecked(false);
         ui.abort->setChecked(false);
+        ui.confirm->setStyleSheet("background: lightgray");
+        ui.abort->setStyleSheet("background: lightgray");
         return true;
 }
 
@@ -928,6 +957,13 @@ void CNCGUI::lights(){
                 msg.b = 1;
         }
         neopixel_all_pub.publish(msg);
+}
+
+void CNCGUI::clean(){
+        ui.clean->setEnabled(false);
+        Clean();
+        ui.clean->setEnabled(true);
+        ui.clean->setChecked(false);
 }
 
 void CNCGUI::drawHUD(Mat &img_src, Mat &img_dst, int res){
@@ -1123,6 +1159,37 @@ void CNCGUI::ScanThread(){
         }
         loadPlanImage();
         ROS_INFO("scan thread STOP");
+}
+
+void CNCGUI::Clean(){
+        ROS_INFO("clean START");
+
+        if(!WaitForPositionReachedSave(cleanser_pos,0.2,30)) {
+                ROS_ERROR("could not reach cleaning position, aborting...");
+                return;
+        }
+        ros::Time t0 = ros::Time::now();
+        switch (cleanser_strategy) {
+        case 0: {
+                MoveToolSave(cleanser_pos.z-cleanser_tool_depth);
+                std_msgs::Int32 msg;
+                msg.data = cleanser_intensity/100.0f*4000;
+                cleanser_pub.publish(msg);
+                while((ros::Time::now()-t0).toSec()<cleanser_time) {
+                        ROS_INFO_THROTTLE(1,"waiting for cleaning to finish");
+                }
+                msg.data = 0;
+                cleanser_pub.publish(msg);
+                break;
+        }
+        }
+
+        MoveToolSave(0);
+        t0 = ros::Time::now();
+        while((ros::Time::now()-t0).toSec()<cleanser_dwell_after_clean) {
+                ROS_INFO_THROTTLE(1,"dwelling...");
+        }
+        ROS_INFO("clean STOP");
 }
 
 void CNCGUI::JoyStickContolThread(){

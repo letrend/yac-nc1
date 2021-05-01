@@ -17,6 +17,7 @@
 #include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Pose.h>
 #include <std_msgs/ColorRGBA.h>
+#include <std_msgs/Int32.h>
 #include "brain_dice_config.hpp"
 #include "camera.hpp"
 #include "joystick.hpp"
@@ -63,6 +64,7 @@ void swap_96well();
 void auto_focus();
 void lights();
 void confirm();
+void clean();
 
 void move();
 void zero();
@@ -95,6 +97,7 @@ void BackLashCalibrationThread();
 void StatusReceiver(const sensor_msgs::JointStateConstPtr &msg);
 void FrameGrabberThread();
 void ScanThread();
+void Clean();
 void JoyStickContolThread();
 void MoveTool(float z);
 bool MoveToolSave(float z, float error = 0.1, int timeout_sec=3);
@@ -125,7 +128,7 @@ QColor color_pallette[16] = {Qt::blue, Qt::red, Qt::green, Qt::cyan, Qt::magenta
 QWidget *widget_;
 ros::NodeHandlePtr nh;
 ros::ServiceClient zero_srv;
-ros::Publisher motor_command, neopixel_all_pub;
+ros::Publisher motor_command, neopixel_all_pub, cleanser_pub;
 ros::Subscriber status_subscriber;
 map<string,QVector<double> > values;
 boost::shared_ptr<ros::AsyncSpinner> spinner;
