@@ -24,7 +24,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1460</width>
+     <width>1452</width>
      <height>770</height>
     </rect>
    </property>
@@ -1272,6 +1272,9 @@
         <height>661</height>
        </rect>
       </property>
+      <property name="cursor">
+       <cursorShape>CrossCursor</cursorShape>
+      </property>
       <property name="mouseTracking">
        <bool>true</bool>
       </property>
@@ -1475,6 +1478,9 @@
       <width>320</width>
       <height>480</height>
      </rect>
+    </property>
+    <property name="cursor">
+     <cursorShape>CrossCursor</cursorShape>
     </property>
     <property name="mouseTracking">
      <bool>true</bool>
@@ -2122,10 +2128,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>1240</x>
-      <y>20</y>
-      <width>211</width>
-      <height>101</height>
+      <x>1190</x>
+      <y>120</y>
+      <width>121</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="text">
@@ -2141,10 +2147,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>1240</x>
-      <y>140</y>
-      <width>211</width>
-      <height>101</height>
+      <x>1320</x>
+      <y>120</y>
+      <width>121</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="text">
@@ -2152,6 +2158,102 @@
     </property>
     <property name="checkable">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cube_view_pre_dice">
+    <property name="geometry">
+     <rect>
+      <x>1180</x>
+      <y>20</y>
+      <width>90</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>pre dice</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_99">
+    <property name="geometry">
+     <rect>
+      <x>1210</x>
+      <y>0</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>pre</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_100">
+    <property name="geometry">
+     <rect>
+      <x>1300</x>
+      <y>0</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>post</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cube_view_post_dice">
+    <property name="geometry">
+     <rect>
+      <x>1270</x>
+      <y>20</y>
+      <width>90</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>post dice</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="cube_view_dispensed">
+    <property name="geometry">
+     <rect>
+      <x>1360</x>
+      <y>20</y>
+      <width>90</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>dispensed</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_101">
+    <property name="geometry">
+     <rect>
+      <x>1370</x>
+      <y>0</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>dispensed</string>
     </property>
    </widget>
   </widget>

@@ -99,6 +99,7 @@ void FrameGrabberThread();
 void ScanThread();
 void Clean();
 void JoyStickContolThread();
+void CubeShot(int type);
 void MoveTool(float z);
 bool MoveToolSave(float z, float error = 0.1, int timeout_sec=3);
 void loadPlanImage();

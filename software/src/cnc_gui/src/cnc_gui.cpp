@@ -211,6 +211,24 @@ void CNCGUI::restoreSettings(const qt_gui_cpp::Settings &plugin_settings,
         joystick_control_thread->detach();
 }
 
+void CNCGUI::CubeShot(int type){
+        Mat img;
+        if(grabFrame(img,HIGH_RES)) {
+                switch (type) {
+                case 0: // pre dice
+                        drawImage(img,ui.cube_view_pre_dice);
+                        break;
+                case 1: // post dice
+                        drawImage(img,ui.cube_view_post_dice);
+                        break;
+                case 2: // dispensed
+                        drawImage(img,ui.cube_view_dispensed);
+                        break;
+                }
+
+        }
+}
+
 bool CNCGUI::eventFilter( QObject* watched, QEvent* event ) {
         if ( watched == ui.cnc_area ) {
                 switch (event->type()) {
