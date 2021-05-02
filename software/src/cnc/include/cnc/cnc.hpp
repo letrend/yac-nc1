@@ -55,11 +55,13 @@ CNC(vector<int32_t*> stepper_base, int32_t *end_switches, int32_t *neopixel) :
                 IOWR(stepper_base[i],REGISTER::enable,1);
                 Zero(i);
         }
-
+        ros::Duration d(1);
+        d.sleep();
         // cleanser stepper
         IOWR(stepper_base[3],REGISTER::ms,STEP_16);
         IOWR(stepper_base[3],REGISTER::Kp,1);
-        IOWR(stepper_base[3],REGISTER::outputMax,6000);
+        IOWR(stepper_base[3],REGISTER::setpoint,0);
+        IOWR(stepper_base[3],REGISTER::outputMax,4000);
         IOWR(stepper_base[3],REGISTER::enable,1);
 
         spinner = boost::shared_ptr<ros::AsyncSpinner>(new ros::AsyncSpinner(0));
@@ -112,6 +114,7 @@ bool Zero(int motor){
                 IOWR(stepper_base[motor],REGISTER::setpoint,current_pos+10000);
                 timeout = (ros::Time::now()-t0).toSec()>30;
         }
+        IOWR(stepper_base[motor],REGISTER::pos_offset,1);
         switch (motor) {
         case 0:
                 IOWR(stepper_base[0],REGISTER::setpoint,int(((min_position[0]+1)*axis_sign[0]-axis_position_offset[0])/MM_PER_TICK));
@@ -123,7 +126,6 @@ bool Zero(int motor){
                 IOWR(stepper_base[2],REGISTER::setpoint,int(((max_position[2]-1)*axis_sign[2]-axis_position_offset[2])/MM_PER_TICK));
                 break;
         }
-        IOWR(stepper_base[motor],REGISTER::pos_offset,1);
         if(timeout) {
                 ROS_WARN("timeout on axis %d, check endswitch!!", motor);
                 return false;

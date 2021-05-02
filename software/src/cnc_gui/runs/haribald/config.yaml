@@ -48,18 +48,18 @@ camera:
     lo_res:
       x: 8.105807
       y: 7.691703
-  id: 2
+  id: 0
   exposure_absolute: 30
 cleanser:
   pos:
-    y: 43.66079711914062
-    x: 48.5820198059082
-    z: -6.51677417755127
+    y: 42.82098388671875
+    x: 48.84688949584961
+    z: -8.758206367492676
   time: 5
   intensity: 100
   strategy: 0
   frequency: 1
-  tool_depth: 35.86631
+  tool_depth: 35.86
   dwell_after_clean: 3
 cnc:
   dimension:

@@ -214,18 +214,25 @@ void CNCGUI::restoreSettings(const qt_gui_cpp::Settings &plugin_settings,
 void CNCGUI::CubeShot(int type){
         Mat img;
         if(grabFrame(img,HIGH_RES)) {
+                cv::Rect myROI(hi_res.height/2-tool_size/2*pixel_per_mm_x[HIGH_RES],
+                               hi_res.width/2-tool_size/2*pixel_per_mm_y[HIGH_RES],
+                               int(tool_size*pixel_per_mm_x[HIGH_RES]),
+                               int(tool_size*pixel_per_mm_y[HIGH_RES]));
+                Mat cube_view = img(myROI);
                 switch (type) {
                 case 0: // pre dice
-                        drawImage(img,ui.cube_view_pre_dice);
+                        drawImage(cube_view,ui.cube_view_pre_dice);
                         break;
                 case 1: // post dice
-                        drawImage(img,ui.cube_view_post_dice);
+                        drawImage(cube_view,ui.cube_view_post_dice);
                         break;
-                case 2: // dispensed
-                        drawImage(img,ui.cube_view_dispensed);
+                case 2: // pre dispense
+                        drawImage(cube_view,ui.cube_view_pre_dispense);
+                        break;
+                case 3: // post dispense
+                        drawImage(cube_view,ui.cube_view_post_dispense);
                         break;
                 }
-
         }
 }
 
@@ -657,7 +664,7 @@ void CNCGUI::DryRunThread(){
                         auto pos = cubes[cube_target];
                         msg.x+=(pos.x-(hi_res.height/2/pixel_per_mm_x[HIGH_RES])+tool_size/2);
                         msg.y+=(-pos.y+(hi_res.width/2/pixel_per_mm_y[HIGH_RES])-tool_size/2);
-                        msg.z = 0;
+                        msg.z = -1;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -666,6 +673,7 @@ void CNCGUI::DryRunThread(){
                         ROS_INFO("cube %d of ninety_six_well %ld at camera position %.1f %.1f",
                                  cube_target,ninety_six_well_IDs[i],pos.x,pos.y);
                         drawPlan();
+                        CubeShot(PRE_DICE);
                         if(!ui.confirmAll->isChecked()) {
                                 if(!checkConfirm(60)) { // wait 60 seconds
                                         abort = true;
@@ -689,16 +697,36 @@ void CNCGUI::DryRunThread(){
                                         break;
                                 }
                         }
+                        //// Post dice check
+                        msg = brain_sample_top_left;
+                        msg.x+=(pos.x-(hi_res.height/2/pixel_per_mm_x[HIGH_RES])+tool_size/2);
+                        msg.y+=(-pos.y+(hi_res.width/2/pixel_per_mm_y[HIGH_RES])-tool_size/2);
+                        msg.z = -1;
+                        if(!WaitForPositionReachedSave(msg,0.1,20)) {
+                                ROS_ERROR("could not reach positions, aborting...");
+                                abort = true;
+                                break;
+                        }
+                        ROS_INFO("cube %d of ninety_six_well %ld at camera position %.1f %.1f",
+                                 cube_target,ninety_six_well_IDs[i],pos.x,pos.y);
+                        CubeShot(POST_DICE);
+                        if(!ui.confirmAll->isChecked()) {
+                                if(!checkConfirm(60)) { // wait 60 seconds
+                                        abort = true;
+                                        break;
+                                }
+                        }
                         //// 96well camera position check
                         msg.x = ninety_six_well_pos[well_counter].x;
                         msg.y = ninety_six_well_pos[well_counter].y;
-                        msg.z = 0;
+                        msg.z = -1;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
                                 break;
                         }
                         ROS_INFO("well %d at camera position %.1f %.1f",well_counter,msg.x,msg.y);
+                        CubeShot(PRE_DISPENSE);
                         if(!ui.confirmAll->isChecked()) {
                                 if(!checkConfirm(60)) { // wait 60 seconds
                                         abort = true;
@@ -715,6 +743,23 @@ void CNCGUI::DryRunThread(){
                         }
                         MoveTool(ninety_six_well_top_left[0].z);
                         ROS_INFO("well %d at tool position %.1f %.1f",well_counter,msg.x,msg.y);
+                        if(!ui.confirmAll->isChecked()) {
+                                if(!checkConfirm(60)) { // wait 60 seconds
+                                        abort = true;
+                                        break;
+                                }
+                        }
+                        //// 96well camera post dispense check
+                        msg.x = ninety_six_well_pos[well_counter].x;
+                        msg.y = ninety_six_well_pos[well_counter].y;
+                        msg.z = -1;
+                        if(!WaitForPositionReachedSave(msg,0.1,20)) {
+                                ROS_ERROR("could not reach positions, aborting...");
+                                abort = true;
+                                break;
+                        }
+                        ROS_INFO("well %d at camera position %.1f %.1f",well_counter,msg.x,msg.y);
+                        CubeShot(POST_DISPENSE);
                         if(!ui.confirmAll->isChecked()) {
                                 if(!checkConfirm(60)) { // wait 60 seconds
                                         abort = true;
@@ -887,26 +932,22 @@ bool CNCGUI::checkConfirm(int timeout_sec){
                         ROS_WARN("abort");
                         ui.confirm->setChecked(false);
                         ui.abort->setChecked(false);
-                        ui.confirm->setStyleSheet("background-color: lightgray; border: none;");
-                        ui.abort->setStyleSheet("background-color: lightgray; border: none;");
+                        ui.LED->setStyleSheet("background-color: lightgray");
                         return false;
                 }
                 if((ros::Time::now()-t1).toSec()>1) {
                         toggle = !toggle;
                         t1 = ros::Time::now();
                         if(toggle) {
-                                ui.confirm->setStyleSheet("background-color: green; border: none;");
-                                ui.abort->setStyleSheet("background-color: lightgray; border: none;");
+                                ui.LED->setStyleSheet("background-color: green");
                         }else{
-                                ui.confirm->setStyleSheet("background-color: lightgray; border: none;");
-                                ui.abort->setStyleSheet("background-color: red; border: none;");
+                                ui.LED->setStyleSheet("background-color: red");
                         }
                 }
         }
         ui.confirm->setChecked(false);
         ui.abort->setChecked(false);
-        ui.confirm->setStyleSheet("background: lightgray");
-        ui.abort->setStyleSheet("background: lightgray");
+        ui.LED->setStyleSheet("background: lightgray");
         return true;
 }
 
@@ -918,6 +959,16 @@ bool CNCGUI::WaitForPositionReachedSave(geometry_msgs::Vector3 &msg, float error
         motor_command.publish(msg_save);
         ros::Time t0 = ros::Time::now();
         float cnc_error = 1000;
+        while((ros::Time::now()-t0).toSec()<timeout && cnc_error>1) {
+                cnc_error = sqrtf(powf(values["pos_x"].back()-msg_save.x,2.0f)+
+                                  powf(values["pos_y"].back()-msg_save.y,2.0f)+
+                                  powf(values["pos_z"].back()-msg_save.z,2.0f));
+        }
+        msg_save.x = msg.x;
+        msg_save.y = msg.x;
+        msg_save.z = -1;
+        motor_command.publish(msg_save);
+        cnc_error = 1000;
         while((ros::Time::now()-t0).toSec()<timeout && cnc_error>1) {
                 cnc_error = sqrtf(powf(values["pos_x"].back()-msg_save.x,2.0f)+
                                   powf(values["pos_y"].back()-msg_save.y,2.0f)+
@@ -1284,7 +1335,7 @@ void CNCGUI::Clean(){
         }
         }
 
-        MoveToolSave(0);
+        MoveToolSave(-1);
         t0 = ros::Time::now();
         while((ros::Time::now()-t0).toSec()<cleanser_dwell_after_clean) {
                 ROS_INFO_THROTTLE(1,"dwelling...");

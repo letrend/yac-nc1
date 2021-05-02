@@ -107,6 +107,44 @@
        <bool>true</bool>
       </property>
      </widget>
+     <widget class="QPushButton" name="stop">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>121</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>stop</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pause">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>121</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>pause</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -2077,38 +2115,6 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="confirm">
-    <property name="geometry">
-     <rect>
-      <x>910</x>
-      <y>240</y>
-      <width>151</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>confirm</string>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="abort">
-    <property name="geometry">
-     <rect>
-      <x>1070</x>
-      <y>240</y>
-      <width>151</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>abort</string>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QCheckBox" name="confirmAll">
     <property name="geometry">
      <rect>
@@ -2122,51 +2128,13 @@
      <string>confirm ALL</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pause">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>1190</x>
-      <y>120</y>
-      <width>121</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>pause</string>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="stop">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>1320</x>
-      <y>120</y>
-      <width>121</width>
-      <height>111</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>stop</string>
-    </property>
-    <property name="checkable">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="cube_view_pre_dice">
     <property name="geometry">
      <rect>
-      <x>1180</x>
+      <x>1230</x>
       <y>20</y>
-      <width>90</width>
-      <height>90</height>
+      <width>100</width>
+      <height>100</height>
      </rect>
     </property>
     <property name="mouseTracking">
@@ -2176,13 +2144,13 @@
      <enum>QFrame::Box</enum>
     </property>
     <property name="text">
-     <string>pre dice</string>
+     <string>pre</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_99">
     <property name="geometry">
      <rect>
-      <x>1210</x>
+      <x>1230</x>
       <y>0</y>
       <width>31</width>
       <height>21</height>
@@ -2195,8 +2163,8 @@
    <widget class="QLabel" name="label_100">
     <property name="geometry">
      <rect>
-      <x>1300</x>
-      <y>0</y>
+      <x>1230</x>
+      <y>120</y>
       <width>31</width>
       <height>21</height>
      </rect>
@@ -2208,10 +2176,10 @@
    <widget class="QLabel" name="cube_view_post_dice">
     <property name="geometry">
      <rect>
-      <x>1270</x>
-      <y>20</y>
-      <width>90</width>
-      <height>90</height>
+      <x>1230</x>
+      <y>140</y>
+      <width>100</width>
+      <height>100</height>
      </rect>
     </property>
     <property name="mouseTracking">
@@ -2221,16 +2189,16 @@
      <enum>QFrame::Box</enum>
     </property>
     <property name="text">
-     <string>post dice</string>
+     <string>post</string>
     </property>
    </widget>
-   <widget class="QLabel" name="cube_view_dispensed">
+   <widget class="QLabel" name="cube_view_pre_dispense">
     <property name="geometry">
      <rect>
-      <x>1360</x>
+      <x>1340</x>
       <y>20</y>
-      <width>90</width>
-      <height>90</height>
+      <width>100</width>
+      <height>100</height>
      </rect>
     </property>
     <property name="mouseTracking">
@@ -2240,21 +2208,114 @@
      <enum>QFrame::Box</enum>
     </property>
     <property name="text">
-     <string>dispensed</string>
+     <string>pre</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_101">
     <property name="geometry">
      <rect>
-      <x>1370</x>
+      <x>1340</x>
       <y>0</y>
-      <width>81</width>
+      <width>101</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>dispensed</string>
+     <string>pre dispense</string>
     </property>
+   </widget>
+   <widget class="QLabel" name="cube_view_post_dispense">
+    <property name="geometry">
+     <rect>
+      <x>1340</x>
+      <y>140</y>
+      <width>100</width>
+      <height>100</height>
+     </rect>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>post</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_102">
+    <property name="geometry">
+     <rect>
+      <x>1340</x>
+      <y>120</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>post dispense</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="confirm_background">
+    <property name="geometry">
+     <rect>
+      <x>912</x>
+      <y>230</y>
+      <width>315</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="confirm">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>10</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>confirm</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="abort">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>10</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>abort</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="LED">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>41</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>LED</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

@@ -22,6 +22,11 @@
 #include "camera.hpp"
 #include "joystick.hpp"
 
+#define PRE_DICE 0
+#define POST_DICE 1
+#define PRE_DISPENSE 2
+#define POST_DISPENSE 3
+
 #endif
 
 using namespace std;
