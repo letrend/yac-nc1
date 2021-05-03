@@ -5,17 +5,17 @@ optical_reference:
     y: 123.7093811035156
 dicing_state:
   slice: 0
-  cube: 3
-  well_counter: 3
+  cube: 0
+  well_counter: 56
 brain_sample:
   bottom_right:
-    x: 77.93787384033203
-    y: 95.61904907226562
-    z: -26.1361083984375
+    x: 102.1435928344727
+    y: 103.1015014648438
+    z: -26.12298583984375
   top_left:
-    x: 56.11744689941406
-    y: 170.2647705078125
-    z: -33.96216583251953
+    x: 50.77533721923828
+    y: 194.0875244140625
+    z: -35.92657852172852
 ninety_six_well:
   top_left:
     y: [350.203857421875, 349.2750854492188]
@@ -32,6 +32,7 @@ tool:
     y: 45.7
     x: 5.7
   size: 6.3
+  offset: 1
   type: 0
   dispense_depth: 31
   dispense_repetitions: 3

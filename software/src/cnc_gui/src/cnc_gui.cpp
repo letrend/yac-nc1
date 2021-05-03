@@ -342,8 +342,8 @@ bool CNCGUI::eventFilter( QObject* watched, QEvent* event ) {
                         float pos_y_sample =  me->pos().y()*plan_image_reticle[HIGH_RES].rows/ui.plan_area->height()/pixel_per_mm_y[HIGH_RES];
                         mouse_cursor_plan_area.setX(me->pos().x());
                         mouse_cursor_plan_area.setY(me->pos().y());
-                        int cubes_col = (pos_x_sample - (hi_res.height/2/pixel_per_mm_x[HIGH_RES]))/tool_size;
-                        int cubes_row = (pos_y_sample - (hi_res.width/2/pixel_per_mm_y[HIGH_RES]))/tool_size;
+                        int cubes_col = (pos_x_sample - (hi_res.height/2/pixel_per_mm_x[HIGH_RES]))/(tool_size+tool_offset);
+                        int cubes_row = (pos_y_sample - (hi_res.width/2/pixel_per_mm_y[HIGH_RES]))/(tool_size+tool_offset);
                         // ROS_INFO_THROTTLE(1,"x: %.1f y: %.1f row: %d col: %d",pos_x_sample,pos_y_sample, cubes_row, cubes_col);
                         cube_hovered = cubes_col*cubes_dim.height+cubes_row;
                         if(cube_hovered>=0 && cube_hovered<cubes.size()) {
@@ -1600,10 +1600,10 @@ void CNCGUI::autoPlan(){
         cube_active.clear();
         float x_dim = (brain_sample_bottom_right.x-brain_sample_top_left.x);
         float y_dim = (brain_sample_top_left.y-brain_sample_bottom_right.y);
-        cubes_dim.width = int(x_dim/tool_size+1);
-        cubes_dim.height = int(y_dim/tool_size+1);
-        for(float cube_x = (hi_res.height/2/pixel_per_mm_x[HIGH_RES]); cube_x<x_dim+(hi_res.height/2/pixel_per_mm_x[HIGH_RES]); cube_x+=tool_size) {
-                for(float cube_y = (hi_res.width/2/pixel_per_mm_y[HIGH_RES]); cube_y<y_dim+(hi_res.width/2/pixel_per_mm_y[HIGH_RES]); cube_y+=tool_size) {
+        cubes_dim.width = int(x_dim/(tool_size+tool_offset)+1);
+        cubes_dim.height = int(y_dim/(tool_size+tool_offset)+1);
+        for(float cube_x = (hi_res.height/2/pixel_per_mm_x[HIGH_RES]); cube_x<x_dim+(hi_res.height/2/pixel_per_mm_x[HIGH_RES]); cube_x+=(tool_size+tool_offset)) {
+                for(float cube_y = (hi_res.width/2/pixel_per_mm_y[HIGH_RES]); cube_y<y_dim+(hi_res.width/2/pixel_per_mm_y[HIGH_RES]); cube_y+=(tool_size+tool_offset)) {
                         cubes.push_back(Point2f(cube_x,cube_y));
                         cv::Mat pRoi = mask( cv::Rect( int(cube_x*pixel_per_mm_x[HIGH_RES]), int(cube_y*pixel_per_mm_y[HIGH_RES]),
                                                        int(tool_size*pixel_per_mm_x[HIGH_RES]), int(tool_size*pixel_per_mm_y[HIGH_RES])) );

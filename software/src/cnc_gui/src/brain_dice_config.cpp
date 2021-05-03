@@ -58,6 +58,7 @@ bool BrainDiceConfig::readConfig(const string &filepath){
                 dispense_depth = config["tool"]["dispense_depth"].as<float>();
                 dispense_repetitions = config["tool"]["dispense_repetitions"].as<int>();
                 tool_size = config["tool"]["size"].as<float>();
+                tool_offset = config["tool"]["offset"].as<float>();
                 tool_type = config["tool"]["type"].as<int>();
                 optical_reference_pos.x = config["optical_reference"]["pos"]["x"].as<float>();
                 optical_reference_pos.y = config["optical_reference"]["pos"]["y"].as<float>();

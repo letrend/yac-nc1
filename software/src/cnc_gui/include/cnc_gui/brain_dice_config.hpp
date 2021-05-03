@@ -94,7 +94,7 @@ int focus_absolute = 60, exposure_absolute = 100;
 float cnc_x_dim = 0, cnc_y_dim = 0;
 float tool_camera_offset_x = 0, tool_camera_offset_y = 0;
 int tool_type = 0;
-float tool_size = 5;
+float tool_size = 5, tool_offset = 0;
 float cut_depth = 0, dwell_on_surface = 0, dispense_depth = 0;
 int dispense_repetitions = 0;
 float cleanser_time = 0, cleanser_intensity = 0, cleanser_tool_depth = 0,
