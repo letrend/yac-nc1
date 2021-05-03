@@ -1,65 +1,65 @@
 optical_reference:
   pos:
     z: 5
-    x: 69.02220916748047
-    y: 134.3770751953125
+    x: 68.48177337646484
+    y: 123.7093811035156
 dicing_state:
   slice: 0
-  cube: 1
-  well_counter: 0
+  cube: 3
+  well_counter: 3
 brain_sample:
   bottom_right:
-    x: 155.8320159912109
-    y: 35.30889892578125
-    z: -26.14339828491211
+    x: 77.93787384033203
+    y: 95.61904907226562
+    z: -26.1361083984375
   top_left:
-    x: 2.3891761302948
-    y: 218.4059906005859
-    z: -26.25906562805176
+    x: 56.11744689941406
+    y: 170.2647705078125
+    z: -33.96216583251953
 ninety_six_well:
   top_left:
-    y: [349.9035034179688, 350.0186767578125]
-    x: [10.29882621765137, 94.74958801269531]
-    z: [-9.26315975189209, -9.282600402832031]
+    y: [350.203857421875, 349.2750854492188]
+    x: [10.28278827667236, 94.88372802734375]
+    z: [-9.25538444519043, -9.280170440673828]
   distance: 8.95
   bottom_right:
-    y: [251.4656524658203, 251.5968780517578]
-    z: [-9.329742431640625, -8.875818252563477]
-    x: [71.56544494628906, 156.0579986572266]
+    y: [251.9098510742188, 251.6036834716797]
+    z: [-9.324396133422852, -8.871443748474121]
+    x: [71.81233215332031, 156.4638061523438]
 tool:
-  dwell_on_surface: 1
+  dwell_on_surface: 0
   camera_offset:
-    y: 45
-    x: 6
+    y: 45.7
+    x: 5.7
   size: 6.3
   type: 0
   dispense_depth: 31
   dispense_repetitions: 3
-  cut_depth: 25
+  cut_depth: 18
 camera:
   calibration_file_path:
-    hi_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_high_resolution.xml
-    lo_res: /home/letrend/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_low_resolution.xml
-  focus_absolute: 81
+    hi_res: /home/braindicer/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_high_resolution.xml
+    lo_res: /home/braindicer/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_low_resolution.xml
+  focus_absolute: 108
   pixel_per_mm:
     hi_res:
-      y: 50.33955
-      x: 50.54678
+      y: 75.65467
+      x: 75.96905
     lo_res:
-      x: 8.105807
-      y: 7.691703
+      x: 12.22347
+      y: 11.59533
   id: 0
   exposure_absolute: 30
 cleanser:
   pos:
-    y: 42.82098388671875
-    x: 48.84688949584961
-    z: -8.758206367492676
+    y: 43.74002075195312
+    x: 48.75454711914062
+    z: -8.750430107116699
   time: 5
   intensity: 100
   strategy: 0
   frequency: 1
-  tool_depth: 35.86
+  tool_depth: 35.85465
   dwell_after_clean: 3
 cnc:
   dimension:
