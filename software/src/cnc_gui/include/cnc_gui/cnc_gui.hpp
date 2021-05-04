@@ -68,6 +68,7 @@ void auto_focus();
 void lights();
 void confirm();
 void clean();
+void reloadConfig();
 
 void move();
 void zero();

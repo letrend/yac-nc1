@@ -1296,6 +1296,22 @@
        </widget>
       </widget>
      </widget>
+     <widget class="QPushButton" name="reload_config">
+      <property name="geometry">
+       <rect>
+        <x>770</x>
+        <y>630</y>
+        <width>121</width>
+        <height>91</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>reload config</string>
+      </property>
+      <property name="checkable">
+       <bool>false</bool>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">

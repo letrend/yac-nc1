@@ -22,23 +22,7 @@ void CNCGUI::initPlugin(qt_gui_cpp::PluginContext &context) {
                 ros::init(argc, argv, "CNCGUI");
         }
 
-        string configFile;
-        nh->getParam("brainDiceConfigFile", configFile);
-        if(!readConfig(configFile)) {
-                brainDiceConfigFile = QFileDialog::getOpenFileName(widget_,
-                                                                   tr("Select brain dice config file"), motorConfigFile,
-                                                                   tr("brain dice config file (*.yaml)"));
-                if(!readConfig(brainDiceConfigFile.toStdString())) {
-                        ROS_FATAL("could not get any config file, i give up!");
-                }
-                nh->setParam("brainDiceConfigFile",brainDiceConfigFile.toStdString());
-        }else{
-                brainDiceConfigFile = QString::fromStdString(configFile);
-        }
-
-        ui.brainDiceConfigFile->setText(brainDiceConfigFile);
-        dicingConfigUpdate();
-        buttonStateUpdate();
+        reloadConfig();
 
         ui.position->addGraph();
         ui.position->graph(0)->setPen(QColor(Qt::red));
@@ -71,6 +55,7 @@ void CNCGUI::initPlugin(qt_gui_cpp::PluginContext &context) {
         QObject::connect(ui.auto_focus, SIGNAL(clicked()), this, SLOT(auto_focus()));
         QObject::connect(ui.lights, SIGNAL(clicked()), this, SLOT(lights()));
         QObject::connect(ui.clean, SIGNAL(clicked()), this, SLOT(clean()));
+        QObject::connect(ui.reload_config, SIGNAL(clicked()), this, SLOT(reloadConfig()));
 
         QObject::connect(ui.x_plus, SIGNAL(pressed()), this, SLOT(move()));
         QObject::connect(ui.x_minus, SIGNAL(pressed()), this, SLOT(move()));
@@ -775,22 +760,17 @@ void CNCGUI::DryRunThread(){
                                          ninety_six_well_cubes_per_well);
                                 Clean();
                                 well_counter=0;
-                                QMessageBox msgBox;
-                                msgBox.setText("96 wells are full");
-                                msgBox.setInformativeText("Hit OK to continue, once you replaced them");
-                                msgBox.setStandardButtons(QMessageBox::Ok |QMessageBox::Cancel);
-                                msgBox.setDefaultButton(QMessageBox::Cancel);
-                                int ret = msgBox.exec();
-                                if(ret==QMessageBox::Ok) {
-                                        ROS_INFO("resuming...");
-                                }else{
-                                        ROS_INFO("aborting...");
+                                ROS_INFO("96 wells are full, hit confirm, once you replaced them");
+                                ui.confirmAll->setChecked(false);
+                                if(!checkConfirm(60)) { // wait 60 seconds
                                         abort = true;
                                         break;
                                 }
                         }
-                        if(well_counter%cleanser_frequency==0) {
-                                Clean();
+                        if(cleanser_frequency>0) {
+                                if(well_counter%cleanser_frequency==0) {
+                                        Clean();
+                                }
                         }
                 }
                 if(abort) {
@@ -803,13 +783,8 @@ void CNCGUI::DryRunThread(){
         }
         MoveToolSave(-1);
         ROS_INFO("dry run STOP");
-        QMessageBox msgBox;
-        msgBox.setText("finished");
         string end_time_string = getDateString();
-        msgBox.setInformativeText(QString::fromStdString("start_time: "+start_time_string+
-                                                         "\nend_time: end_time_string"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        int ret = msgBox.exec();
+        ROS_INFO_STREAM("start_time: "+start_time_string+"\nend_time: "+end_time_string);
 }
 
 void CNCGUI::RunThread(){
@@ -975,24 +950,17 @@ void CNCGUI::RunThread(){
                                          ninety_six_well_cubes_per_well);
                                 Clean();
                                 ninety_six_well_counter=0;
-                                {
-                                        QMessageBox msgBox;
-                                        msgBox.setText("96 wells are full");
-                                        msgBox.setInformativeText("Hit OK to continue, once you replaced them");
-                                        msgBox.setStandardButtons(QMessageBox::Ok |QMessageBox::Cancel);
-                                        msgBox.setDefaultButton(QMessageBox::Cancel);
-                                        int ret = msgBox.exec();
-                                        if(ret==QMessageBox::Ok) {
-                                                ROS_INFO("resuming...");
-                                        }else{
-                                                ROS_INFO("aborting...");
-                                                abort = true;
-                                                break;
-                                        }
+                                ROS_INFO("96 wells are full, hit confirm, once you replaced them");
+                                ui.confirmAll->setChecked(false);
+                                if(!checkConfirm(120)) { // wait 120 seconds
+                                        abort = true;
+                                        break;
                                 }
                         }
-                        if(ninety_six_well_counter%cleanser_frequency==0) {
-                                Clean();
+                        if(cleanser_frequency>0) {
+                                if(ninety_six_well_counter%cleanser_frequency==0) {
+                                        Clean();
+                                }
                         }
                         Q_EMIT updateDicingConfig();
                         Q_EMIT updateButtonStates();
@@ -1007,13 +975,8 @@ void CNCGUI::RunThread(){
                 ui.stop->setEnabled(false);
         }
         ROS_INFO("run STOP");
-        QMessageBox msgBox;
-        msgBox.setText("finished");
         string end_time_string = getDateString();
-        msgBox.setInformativeText(QString::fromStdString("start_time: "+start_time_string+
-                                                         "\nend_time: end_time_string"));
-        msgBox.setStandardButtons(QMessageBox::Ok);
-        int ret = msgBox.exec();
+        ROS_INFO_STREAM("start_time: "+start_time_string+"\nend_time: "+end_time_string);
 }
 
 bool CNCGUI::checkConfirm(int timeout_sec){
@@ -1974,6 +1937,7 @@ void CNCGUI::prev_slice(){
         Q_EMIT updateDicingConfig();
         Q_EMIT updateButtonStates();
         Q_EMIT updatePlan(false);
+        loadPlanImage();
 }
 
 void CNCGUI::next_slice(){
@@ -1981,6 +1945,7 @@ void CNCGUI::next_slice(){
         Q_EMIT updateDicingConfig();
         Q_EMIT updateButtonStates();
         Q_EMIT updatePlan(false);
+        loadPlanImage();
 }
 
 void CNCGUI::next_cube(){
@@ -2023,6 +1988,26 @@ string CNCGUI::getDateString(){
         strftime(buffer,sizeof(buffer),"%d.%m.%Y %H:%M:%S",timeinfo);
         std::string str(buffer);
         return str;
+}
+
+void CNCGUI::reloadConfig(){
+        string configFile;
+        nh->getParam("brainDiceConfigFile", configFile);
+        if(!readConfig(configFile)) {
+                brainDiceConfigFile = QFileDialog::getOpenFileName(widget_,
+                                                                   tr("Select brain dice config file"), motorConfigFile,
+                                                                   tr("brain dice config file (*.yaml)"));
+                if(!readConfig(brainDiceConfigFile.toStdString())) {
+                        ROS_FATAL("could not get any config file, i give up!");
+                }
+                nh->setParam("brainDiceConfigFile",brainDiceConfigFile.toStdString());
+        }else{
+                brainDiceConfigFile = QString::fromStdString(configFile);
+        }
+
+        ui.brainDiceConfigFile->setText(brainDiceConfigFile);
+        dicingConfigUpdate();
+        buttonStateUpdate();
 }
 
 void CNCGUI::BackLashCalibrationThread(){
