@@ -1420,7 +1420,7 @@
        <string>RUN</string>
       </property>
       <property name="checkable">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
      </widget>
     </widget>
@@ -2050,32 +2050,6 @@
       </property>
       <property name="readOnly">
        <bool>true</bool>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="scan_96well">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>80</y>
-        <width>41</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>scan</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="swap_96well">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>80</y>
-        <width>41</width>
-        <height>25</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>swap</string>
       </property>
      </widget>
     </widget>

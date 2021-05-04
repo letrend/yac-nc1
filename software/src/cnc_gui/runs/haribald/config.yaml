@@ -6,37 +6,40 @@ optical_reference:
 dicing_state:
   slice: 0
   cube: 0
-  well_counter: 56
+  well_counter: 0
 brain_sample:
   bottom_right:
-    x: 102.1435928344727
-    y: 103.1015014648438
-    z: -26.12298583984375
+    x: 91.38938140869141
+    y: 77.45773315429688
+    z: -31.76593208312988
   top_left:
-    x: 50.77533721923828
-    y: 194.0875244140625
-    z: -35.92657852172852
+    x: 62.13996124267578
+    y: 167.6355133056641
+    z: -31.32513046264648
 ninety_six_well:
   top_left:
-    y: [350.203857421875, 349.2750854492188]
-    x: [10.28278827667236, 94.88372802734375]
-    z: [-9.25538444519043, -9.280170440673828]
+    y: [350.2087097167969, 349.7003479003906]
+    x: [10.27987194061279, 94.71848297119141]
+    z: [-11.23389053344727, -11.22076797485352]
   distance: 8.95
   bottom_right:
-    y: [251.9098510742188, 251.6036834716797]
-    z: [-9.324396133422852, -8.871443748474121]
-    x: [71.81233215332031, 156.4638061523438]
+    y: [251.9122924804688, 251.6080474853516]
+    z: [-11.30533218383789, -10.86015605926514]
+    x: [71.80844116210938, 156.4604187011719]
+  cubes_per_well: 11
 tool:
   dwell_on_surface: 0
+  dwell_in_sample: 1
   camera_offset:
     y: 45.7
     x: 5.7
-  size: 6.3
-  offset: 1
+  size: 5
+  offset: 0.1
   type: 0
   dispense_depth: 31
   dispense_repetitions: 3
-  cut_depth: 18
+  cut_depth: 20
+  safe_height: -1
 camera:
   calibration_file_path:
     hi_res: /home/braindicer/workspace/yac-nc1/software/src/cnc_gui/calibration/imx258_high_resolution.xml
@@ -53,16 +56,16 @@ camera:
   exposure_absolute: 30
 cleanser:
   pos:
-    y: 43.74002075195312
-    x: 48.75454711914062
-    z: -8.750430107116699
+    y: 43.11306762695312
+    x: 48.75989532470703
+    z: -6.739848136901855
   time: 5
   intensity: 100
   strategy: 0
   frequency: 1
-  tool_depth: 35.85465
+  tool_depth: 47.94001
   dwell_after_clean: 3
 cnc:
   dimension:
     y: 397
-    x: 160
+    x: 163

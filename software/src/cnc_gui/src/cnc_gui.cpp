@@ -68,8 +68,6 @@ void CNCGUI::initPlugin(qt_gui_cpp::PluginContext &context) {
         QObject::connect(ui.next_slice, SIGNAL(pressed()), this, SLOT(next_slice()));
         QObject::connect(ui.prev_cube, SIGNAL(pressed()), this, SLOT(prev_cube()));
         QObject::connect(ui.next_cube, SIGNAL(pressed()), this, SLOT(next_cube()));
-        QObject::connect(ui.scan_96well, SIGNAL(pressed()), this, SLOT(scan_96well()));
-        QObject::connect(ui.swap_96well, SIGNAL(pressed()), this, SLOT(swap_96well()));
         QObject::connect(ui.auto_focus, SIGNAL(clicked()), this, SLOT(auto_focus()));
         QObject::connect(ui.lights, SIGNAL(clicked()), this, SLOT(lights()));
         QObject::connect(ui.clean, SIGNAL(clicked()), this, SLOT(clean()));
@@ -552,7 +550,7 @@ void CNCGUI::Calibrate96wellThread(int number){
                  ninety_six_well_top_left[number].x,
                  ninety_six_well_top_left[number].y);
         geometry_msgs::Vector3 msg = ninety_six_well_top_left[number];
-        msg.z = 0;
+        msg.z = tool_safe_height;
         WaitForPositionReachedSave(msg,0.01,1);
         if(!checkConfirm(120)) // 2 minutes timeout
                 return;
@@ -561,7 +559,7 @@ void CNCGUI::Calibrate96wellThread(int number){
         msg = ninety_six_well_top_left[number];
         msg.x+=tool_camera_offset_x;
         msg.y+=tool_camera_offset_y;
-        msg.z=0;
+        msg.z = tool_safe_height;
         WaitForPositionReachedSave(msg,0.1,10);
         MoveTool(ninety_six_well_top_left[number].z);
         ROS_INFO("move blade manually until it just about touches the 96 well");
@@ -575,7 +573,7 @@ void CNCGUI::Calibrate96wellThread(int number){
                  ninety_six_well_bottom_right[number].x,
                  ninety_six_well_bottom_right[number].y);
         msg = ninety_six_well_bottom_right[number];
-        msg.z = 0;
+        msg.z = tool_safe_height;
         WaitForPositionReachedSave(msg,0.01,1);
         if(!checkConfirm(120)) // 2 minutes timeout
                 return;
@@ -585,7 +583,7 @@ void CNCGUI::Calibrate96wellThread(int number){
         msg = ninety_six_well_bottom_right[number];
         msg.x+=tool_camera_offset_x;
         msg.y+=tool_camera_offset_y;
-        msg.z=0;
+        msg.z = tool_safe_height;
         WaitForPositionReachedSave(msg,0.1,10);
         MoveTool(ninety_six_well_bottom_right[number].z);
         ROS_INFO("move blade manually until it just about touches the 96 well");
@@ -593,7 +591,7 @@ void CNCGUI::Calibrate96wellThread(int number){
                 return;
         ninety_six_well_bottom_right[number].z = values["pos_z"].back();
         Q_EMIT updateDicingConfig();
-        MoveTool(0);
+        MoveTool(-1);
         calculate96wellPositions();
         //////////////
         ROS_INFO("96well calibration STOP");
@@ -605,7 +603,7 @@ void CNCGUI::CalibrateBrainThread(){
                  brain_sample_top_left.x,
                  brain_sample_top_left.y);
         geometry_msgs::Vector3 msg = brain_sample_top_left;
-        msg.z = 0;
+        msg.z = tool_safe_height;
         WaitForPositionReachedSave(msg,0.01,1);
         if(!checkConfirm(120)) // 2 minutes timeout
                 return;
@@ -614,7 +612,7 @@ void CNCGUI::CalibrateBrainThread(){
         msg = brain_sample_top_left;
         msg.x+=tool_camera_offset_x;
         msg.y+=tool_camera_offset_y;
-        msg.z=0;
+        msg.z = tool_safe_height;
         WaitForPositionReachedSave(msg,0.1,10);
         MoveTool(brain_sample_top_left.z);
         ROS_INFO("move blade manually until it just about touches the sample");
@@ -628,7 +626,7 @@ void CNCGUI::CalibrateBrainThread(){
                  brain_sample_bottom_right.x,
                  brain_sample_bottom_right.y);
         msg = brain_sample_bottom_right;
-        msg.z = 0;
+        msg.z = tool_safe_height;
         WaitForPositionReachedSave(msg,0.01,1);
         if(!checkConfirm(120)) // 2 minutes timeout
                 return;
@@ -638,7 +636,7 @@ void CNCGUI::CalibrateBrainThread(){
         msg = brain_sample_bottom_right;
         msg.x+=tool_camera_offset_x;
         msg.y+=tool_camera_offset_y;
-        msg.z=0;
+        msg.z = tool_safe_height;
         WaitForPositionReachedSave(msg,0.1,10);
         MoveTool(brain_sample_bottom_right.z);
         ROS_INFO("move blade manually until it just about touches the 96 well");
@@ -646,12 +644,13 @@ void CNCGUI::CalibrateBrainThread(){
                 return;
         brain_sample_bottom_right.z = values["pos_z"].back();
         Q_EMIT updateDicingConfig();
-        MoveTool(0);
+        MoveTool(-1);
         ROS_INFO("brain calibration STOP");
 }
 
 void CNCGUI::DryRunThread(){
         ROS_INFO("dry run START");
+        string start_time_string = getDateString();
         ui.pause->setEnabled(true);
         ui.stop->setEnabled(true);
         well_counter = 0;
@@ -664,7 +663,7 @@ void CNCGUI::DryRunThread(){
                         auto pos = cubes[cube_target];
                         msg.x+=(pos.x-(hi_res.height/2/pixel_per_mm_x[HIGH_RES])+tool_size/2);
                         msg.y+=(-pos.y+(hi_res.width/2/pixel_per_mm_y[HIGH_RES])-tool_size/2);
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -701,7 +700,7 @@ void CNCGUI::DryRunThread(){
                         msg = brain_sample_top_left;
                         msg.x+=(pos.x-(hi_res.height/2/pixel_per_mm_x[HIGH_RES])+tool_size/2);
                         msg.y+=(-pos.y+(hi_res.width/2/pixel_per_mm_y[HIGH_RES])-tool_size/2);
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -719,7 +718,7 @@ void CNCGUI::DryRunThread(){
                         //// 96well camera position check
                         msg.x = ninety_six_well_pos[well_counter].x;
                         msg.y = ninety_six_well_pos[well_counter].y;
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -752,7 +751,7 @@ void CNCGUI::DryRunThread(){
                         //// 96well camera post dispense check
                         msg.x = ninety_six_well_pos[well_counter].x;
                         msg.y = ninety_six_well_pos[well_counter].y;
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -768,10 +767,12 @@ void CNCGUI::DryRunThread(){
                         }
 
                         well_counter++;
-                        if(well_counter==96) {
-                                ROS_INFO("first 96well full");
-                        }else if(well_counter==96*2) {
-                                ROS_INFO("second 96well full, now would be a good time to change them");
+                        if(well_counter==ninety_six_well_cubes_per_well) {
+                                ROS_INFO("first 96well full with %d cubes", ninety_six_well_cubes_per_well);
+                                well_counter = 96;
+                        }else if(well_counter>=(well_counter+ninety_six_well_cubes_per_well)) {
+                                ROS_INFO("second 96well full with %d cubes, now would be a good time to change them",
+                                         ninety_six_well_cubes_per_well);
                                 Clean();
                                 well_counter=0;
                                 QMessageBox msgBox;
@@ -800,8 +801,15 @@ void CNCGUI::DryRunThread(){
                 ui.pause->setEnabled(false);
                 ui.stop->setEnabled(false);
         }
-        MoveToolSave(0);
+        MoveToolSave(-1);
         ROS_INFO("dry run STOP");
+        QMessageBox msgBox;
+        msgBox.setText("finished");
+        string end_time_string = getDateString();
+        msgBox.setInformativeText(QString::fromStdString("start_time: "+start_time_string+
+                                                         "\nend_time: end_time_string"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
 }
 
 void CNCGUI::RunThread(){
@@ -809,15 +817,17 @@ void CNCGUI::RunThread(){
         bool abort = false;
         ui.pause->setEnabled(true);
         ui.stop->setEnabled(true);
-        for(int i=cube/96; i<ninety_six_well_content.size(); i++) {
-                for(int j=cube%96; j<ninety_six_well_content[i].size(); j++) {
+        string start_time_string = getDateString();
+        for(int i=cube/ninety_six_well_cubes_per_well; i<ninety_six_well_content.size(); i++) {
+                ui.ninety_six_well_ID->setText(QString::number(ninety_six_well_IDs[i]));
+                for(int j=cube%ninety_six_well_cubes_per_well; j<ninety_six_well_content[i].size(); j++) {
                         geometry_msgs::Vector3 msg = brain_sample_top_left;
                         cube_target = ninety_six_well_content[i][j];
                         //// sample camera position check
                         auto pos = cubes[cube_target];
                         msg.x+=(pos.x-(hi_res.height/2/pixel_per_mm_x[HIGH_RES])+tool_size/2);
                         msg.y+=(-pos.y+(hi_res.width/2/pixel_per_mm_y[HIGH_RES])-tool_size/2);
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -855,19 +865,22 @@ void CNCGUI::RunThread(){
                                 abort = true;
                                 break;
                         }
+                        ROS_INFO("dwelling in sample for %.1f seconds",dwell_in_sample);
+                        ros::Duration dwell0(dwell_in_sample);
+                        dwell0.sleep();
                         ROS_INFO("returning to surface");
                         if(!MoveToolSave(brain_sample_top_left.z)) {
                                 abort = true;
                                 break;
                         }
                         ROS_INFO("dwelling on surface for %.1f seconds",dwell_on_surface);
-                        ros::Duration dwell(dwell_on_surface);
-                        dwell.sleep();
+                        ros::Duration dwell1(dwell_on_surface);
+                        dwell1.sleep();
                         //// Post dice check
                         msg = brain_sample_top_left;
                         msg.x+=(pos.x-(hi_res.height/2/pixel_per_mm_x[HIGH_RES])+tool_size/2);
                         msg.y+=(-pos.y+(hi_res.width/2/pixel_per_mm_y[HIGH_RES])-tool_size/2);
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -885,7 +898,7 @@ void CNCGUI::RunThread(){
                         //// 96well camera position check
                         msg.x = ninety_six_well_pos[ninety_six_well_counter].x;
                         msg.y = ninety_six_well_pos[ninety_six_well_counter].y;
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -904,7 +917,7 @@ void CNCGUI::RunThread(){
                         ROS_INFO("moving to well position");
                         msg.x = ninety_six_well_pos[ninety_six_well_counter].x+tool_camera_offset_x;
                         msg.y = ninety_six_well_pos[ninety_six_well_counter].y+tool_camera_offset_y;
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -934,7 +947,7 @@ void CNCGUI::RunThread(){
                         //// 96well camera post dispense check
                         msg.x = ninety_six_well_pos[ninety_six_well_counter].x;
                         msg.y = ninety_six_well_pos[ninety_six_well_counter].y;
-                        msg.z = -1;
+                        msg.z = tool_safe_height;
                         if(!WaitForPositionReachedSave(msg,0.1,20)) {
                                 ROS_ERROR("could not reach positions, aborting...");
                                 abort = true;
@@ -954,40 +967,53 @@ void CNCGUI::RunThread(){
                         ninety_six_well_counter++;
                         Q_EMIT updateDicingConfig();
                         Q_EMIT updateButtonStates();
-                        if(ninety_six_well_counter==96) {
-                                ROS_INFO("first 96well full");
-                        }else if(ninety_six_well_counter==96*2) {
-                                ROS_INFO("second 96well full, now would be a good time to change them");
+                        if(ninety_six_well_counter==ninety_six_well_cubes_per_well) {
+                                ROS_INFO("first 96well full with %d cubes", ninety_six_well_cubes_per_well);
+                                ninety_six_well_counter = 96; // this is the first well of the second 96well
+                        }else if(ninety_six_well_counter>=(96+ninety_six_well_cubes_per_well)) {
+                                ROS_INFO("second 96well full with %d cubes, now would be a good time to change them",
+                                         ninety_six_well_cubes_per_well);
                                 Clean();
                                 ninety_six_well_counter=0;
-                                QMessageBox msgBox;
-                                msgBox.setText("96 wells are full");
-                                msgBox.setInformativeText("Hit OK to continue, once you replaced them");
-                                msgBox.setStandardButtons(QMessageBox::Ok |QMessageBox::Cancel);
-                                msgBox.setDefaultButton(QMessageBox::Cancel);
-                                int ret = msgBox.exec();
-                                if(ret==QMessageBox::Ok) {
-                                        ROS_INFO("resuming...");
-                                }else{
-                                        ROS_INFO("aborting...");
-                                        abort = true;
-                                        break;
+                                {
+                                        QMessageBox msgBox;
+                                        msgBox.setText("96 wells are full");
+                                        msgBox.setInformativeText("Hit OK to continue, once you replaced them");
+                                        msgBox.setStandardButtons(QMessageBox::Ok |QMessageBox::Cancel);
+                                        msgBox.setDefaultButton(QMessageBox::Cancel);
+                                        int ret = msgBox.exec();
+                                        if(ret==QMessageBox::Ok) {
+                                                ROS_INFO("resuming...");
+                                        }else{
+                                                ROS_INFO("aborting...");
+                                                abort = true;
+                                                break;
+                                        }
                                 }
                         }
                         if(ninety_six_well_counter%cleanser_frequency==0) {
                                 Clean();
                         }
+                        Q_EMIT updateDicingConfig();
+                        Q_EMIT updateButtonStates();
                 }
                 if(abort) {
                         break;
                 }
         }
-        MoveToolSave(0);
+        MoveToolSave(-1);
         if(abort) {
                 ui.pause->setEnabled(false);
                 ui.stop->setEnabled(false);
         }
         ROS_INFO("run STOP");
+        QMessageBox msgBox;
+        msgBox.setText("finished");
+        string end_time_string = getDateString();
+        msgBox.setInformativeText(QString::fromStdString("start_time: "+start_time_string+
+                                                         "\nend_time: end_time_string"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        int ret = msgBox.exec();
 }
 
 bool CNCGUI::checkConfirm(int timeout_sec){
@@ -1378,6 +1404,7 @@ void CNCGUI::ScanThread(){
                 dir = !dir;
         }
         loadPlanImage();
+
         ROS_INFO("scan thread STOP");
 }
 
@@ -1446,7 +1473,7 @@ void CNCGUI::JoyStickContolThread(){
                                         geometry_msgs::Vector3 msg;
                                         msg.x = values["pos_x"].back();
                                         msg.y = values["pos_y"].back();
-                                        msg.z = 0;
+                                        msg.z = tool_safe_height;
                                         motor_command.publish(msg);
                                         break;
                                 }
@@ -1532,7 +1559,7 @@ bool CNCGUI::MoveToolSave(float z, float error, int timeout_sec){
                         ROS_WARN("move tool timeout! moveing tool completely up!");
                         msg.x = values["pos_x"].back();
                         msg.y = values["pos_y"].back();
-                        msg.z = 0;
+                        msg.z = tool_safe_height;
                         motor_command.publish(msg);
                         return false;
                 }
@@ -1873,7 +1900,7 @@ void CNCGUI::planUpdate(){
                 if(val) {
                         active_positions++;
                         ninety_six_well.push_back(i);
-                        if(ninety_six_well.size()==96) { // if a well if full we take the next
+                        if(ninety_six_well.size()==ninety_six_well_cubes_per_well) { // if a well if full we take the next
                                 ninety_six_well_IDs.push_back(ros::Time::now().toNSec());
                                 ninety_six_well_content.push_back(ninety_six_well);
                                 ninety_six_well.clear();
@@ -1968,14 +1995,6 @@ void CNCGUI::prev_cube(){
         Q_EMIT updateButtonStates();
 }
 
-void CNCGUI::scan_96well(){
-        ROS_INFO("scan_96well button clicked");
-}
-
-void CNCGUI::swap_96well(){
-        ROS_INFO("swap_96well button clicked");
-}
-
 void CNCGUI::buttonStateUpdate(){
         ui.prev_slice->setEnabled(slice>0);
         ui.prev_cube->setEnabled(cube>0);
@@ -1991,6 +2010,19 @@ void CNCGUI::dry_run(){
                         dry_run_thread->join();
         dry_run_thread = boost::shared_ptr<std::thread>( new std::thread(&CNCGUI::DryRunThread, this));
         dry_run_thread->detach();
+}
+
+string CNCGUI::getDateString(){
+        time_t rawtime;
+        struct tm * timeinfo;
+        char buffer[80];
+
+        time (&rawtime);
+        timeinfo = localtime(&rawtime);
+
+        strftime(buffer,sizeof(buffer),"%d.%m.%Y %H:%M:%S",timeinfo);
+        std::string str(buffer);
+        return str;
 }
 
 void CNCGUI::BackLashCalibrationThread(){

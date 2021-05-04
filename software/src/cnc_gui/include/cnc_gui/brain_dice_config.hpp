@@ -86,7 +86,7 @@ geometry_msgs::Vector3 optical_reference_pos,
 vector<geometry_msgs::Vector3> ninety_six_well_top_left, ninety_six_well_bottom_right;
 float ninety_six_well_distance = 0;
 int slice = 0, cube = 0, camera_id = 0;
-int ninety_six_well_counter = 0;
+int ninety_six_well_counter = 0, ninety_six_well_cubes_per_well = 96;
 string camera_calibration_file_path_lo_res = "",
        camera_calibration_file_path_hi_res = "";
 vector<float> pixel_per_mm_x = {20,20}, pixel_per_mm_y = {20,20};
@@ -94,8 +94,8 @@ int focus_absolute = 60, exposure_absolute = 100;
 float cnc_x_dim = 0, cnc_y_dim = 0;
 float tool_camera_offset_x = 0, tool_camera_offset_y = 0;
 int tool_type = 0;
-float tool_size = 5, tool_offset = 0;
-float cut_depth = 0, dwell_on_surface = 0, dispense_depth = 0;
+float tool_size = 5, tool_offset = 0, tool_safe_height = -1;
+float cut_depth = 0, dwell_on_surface = 0, dispense_depth = 0, dwell_in_sample = 0;
 int dispense_repetitions = 0;
 float cleanser_time = 0, cleanser_intensity = 0, cleanser_tool_depth = 0,
       cleanser_dwell_after_clean =0;

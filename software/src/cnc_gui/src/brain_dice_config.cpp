@@ -29,6 +29,7 @@ bool BrainDiceConfig::readConfig(const string &filepath){
                         ninety_six_well_bottom_right.push_back(msg);
                 }
                 ninety_six_well_distance = config["ninety_six_well"]["distance"].as<float>();
+                ninety_six_well_cubes_per_well = config["ninety_six_well"]["cubes_per_well"].as<int>();
                 brain_sample_top_left.x = config["brain_sample"]["top_left"]["x"].as<float>();
                 brain_sample_top_left.y = config["brain_sample"]["top_left"]["y"].as<float>();
                 brain_sample_top_left.z = config["brain_sample"]["top_left"]["z"].as<float>();
@@ -55,10 +56,12 @@ bool BrainDiceConfig::readConfig(const string &filepath){
                 tool_camera_offset_y = config["tool"]["camera_offset"]["y"].as<float>();
                 cut_depth = config["tool"]["cut_depth"].as<float>();
                 dwell_on_surface = config["tool"]["dwell_on_surface"].as<float>();
+                dwell_in_sample = config["tool"]["dwell_in_sample"].as<float>();
                 dispense_depth = config["tool"]["dispense_depth"].as<float>();
                 dispense_repetitions = config["tool"]["dispense_repetitions"].as<int>();
                 tool_size = config["tool"]["size"].as<float>();
                 tool_offset = config["tool"]["offset"].as<float>();
+                tool_safe_height = config["tool"]["safe_height"].as<float>();
                 tool_type = config["tool"]["type"].as<int>();
                 optical_reference_pos.x = config["optical_reference"]["pos"]["x"].as<float>();
                 optical_reference_pos.y = config["optical_reference"]["pos"]["y"].as<float>();

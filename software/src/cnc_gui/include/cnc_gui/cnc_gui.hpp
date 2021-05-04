@@ -64,8 +64,6 @@ void prev_slice();
 void next_slice();
 void prev_cube();
 void next_cube();
-void scan_96well();
-void swap_96well();
 void auto_focus();
 void lights();
 void confirm();
@@ -129,6 +127,7 @@ bool checkConfirm(int timeout_sec=30);
 bool get96well(int cube, Scalar &color);
 bool checkPause();
 bool checkStop();
+string getDateString();
 private:
 Ui::CNCGUI ui;
 QColor color_pallette[16] = {Qt::blue, Qt::red, Qt::green, Qt::cyan, Qt::magenta, Qt::darkGray, Qt::darkRed, Qt::darkGreen,

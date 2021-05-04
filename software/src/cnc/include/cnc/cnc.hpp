@@ -114,7 +114,7 @@ bool Zero(int motor){
                 IOWR(stepper_base[motor],REGISTER::setpoint,current_pos+10000);
                 timeout = (ros::Time::now()-t0).toSec()>30;
         }
-        IOWR(stepper_base[motor],REGISTER::pos_offset,1);
+
         switch (motor) {
         case 0:
                 IOWR(stepper_base[0],REGISTER::setpoint,int(((min_position[0]+1)*axis_sign[0]-axis_position_offset[0])/MM_PER_TICK));
@@ -126,6 +126,7 @@ bool Zero(int motor){
                 IOWR(stepper_base[2],REGISTER::setpoint,int(((max_position[2]-1)*axis_sign[2]-axis_position_offset[2])/MM_PER_TICK));
                 break;
         }
+        IOWR(stepper_base[motor],REGISTER::pos_offset,1);
         if(timeout) {
                 ROS_WARN("timeout on axis %d, check endswitch!!", motor);
                 return false;
@@ -232,8 +233,8 @@ const vector<int> setpoint_delta_axis = {3,4,1},
                   ramp_up_limits = {6000,6000,6000},
                   ramp_up_thresholds = {30,30,30},
                   max_speed = {13000,13000,14000};
-const vector<float> max_position = {160,398,0},
-                    min_position = {0,34.9,-52},
+const vector<float> max_position = {163,398,0},
+                    min_position = {0,34.9,-65},
                     axis_sign = {-1,1,1},
                     axis_position_offset = {0,398,0};
 
