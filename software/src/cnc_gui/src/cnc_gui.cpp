@@ -1121,18 +1121,18 @@ void CNCGUI::AutoFocusMonitorThread(){
         ros::Rate rate(1);
         while(ros::ok()) {
                 if(ui.auto_focus->isChecked()) {
-                        if(getV4L2("exposure_auto")!=3)
-                                setV4L2("exposure_auto",3);
-                        if(getV4L2("focus_auto")!=1)
-                                setV4L2("focus_auto",1);
+                        if(getV4L2("auto_exposure")!=3)
+                                setV4L2("auto_exposure",3);
+                        if(getV4L2("focus_automatic_continuous")!=1)
+                                setV4L2("focus_automatic_continuous",1);
                         ui.focus_absolute->setText(QString::number(getV4L2("focus_absolute")));
-                        ui.exposure_absolute->setText(QString::number(getV4L2("exposure_absolute")));
+                        ui.exposure_absolute->setText(QString::number(getV4L2("exposure_time_absolute")));
                 }else{
                         // force manual focus and manual exposure
-                        setV4L2("exposure_auto",1);
-                        setV4L2("focus_auto",0);
+                        setV4L2("auto_exposure",1);
+                        setV4L2("focus_automatic_continuous",0);
                         setV4L2("focus_absolute",focus_absolute);
-                        setV4L2("exposure_absolute",exposure_absolute);
+                        setV4L2("exposure_time_absolute",exposure_absolute);
                         ui.focus_absolute->setText(QString::number(focus_absolute));
                         ui.exposure_absolute->setText(QString::number(exposure_absolute));
                 }
@@ -1143,14 +1143,14 @@ void CNCGUI::AutoFocusMonitorThread(){
 
 void CNCGUI::auto_focus(){
         if(ui.auto_focus->isChecked()) {
-                setV4L2("focus_auto",1);
-                setV4L2("exposure_auto",3);
+                setV4L2("focus_automatic_continuous",1);
+                setV4L2("auto_exposure",3);
         }else{
                 ROS_INFO("manual focus");
-                setV4L2("focus_auto",0);
+                setV4L2("focus_automatic_continuous",0);
                 setV4L2("focus_absolute",focus_absolute);
-                setV4L2("exposure_auto",1);
-                setV4L2("exposure_absolute",exposure_absolute);
+                setV4L2("auto_exposure",1);
+                setV4L2("exposure_time_absolute",exposure_absolute);
         }
 }
 
