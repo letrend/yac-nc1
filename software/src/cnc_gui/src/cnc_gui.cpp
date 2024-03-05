@@ -1888,20 +1888,20 @@ void CNCGUI::planUpdate(){
     vector<int> ninety_six_well;
     int i = 0;
     for(auto val:cube_active) {
-            if(val) {
-                    active_positions++;
-                    ninety_six_well.push_back(i);
-                    if(ninety_six_well.size()==ninety_six_well_cubes_per_well) { // if a well if full we take the next
-                            ninety_six_well_IDs.push_back(ros::Time::now().toNSec());
-                            ninety_six_well_content.push_back(ninety_six_well);
-                            ninety_six_well.clear();
-                    }
+        if(val) {
+            active_positions++;
+            ninety_six_well.push_back(i);
+            if(ninety_six_well.size()==ninety_six_well_cubes_per_well) { // if a well if full we take the next
+                    ninety_six_well_IDs.push_back(ros::Time::now().toNSec());
+                    ninety_six_well_content.push_back(ninety_six_well);
+                    ninety_six_well.clear();
             }
-            i++;
+        }
+        i++;
     }
     if(ninety_six_well.size()>0) { // if we started filling a 96 well and are done
-            ninety_six_well_IDs.push_back(ros::Time::now().toNSec());
-            ninety_six_well_content.push_back(ninety_six_well);
+        ninety_six_well_IDs.push_back(ros::Time::now().toNSec());
+        ninety_six_well_content.push_back(ninety_six_well);
     }
     ROS_INFO("%d active positions distributed on %ld 96wells", active_positions, ninety_six_well_IDs.size());
     if(writePlan(slice,ros::Time::now().toNSec(),cubes_dim,cubes,cube_active,ninety_six_well_IDs,ninety_six_well_content)) {
@@ -1912,13 +1912,13 @@ void CNCGUI::planUpdate(){
 
 void CNCGUI::planUpdate(int write){
     if(write==1) {
-            if(writePlan(slice,ros::Time::now().toNSec(),cubes_dim,cubes,cube_active,ninety_six_well_IDs,ninety_six_well_content))
-                    ROS_INFO("plan written");
+        if(writePlan(slice,ros::Time::now().toNSec(),cubes_dim,cubes,cube_active,ninety_six_well_IDs,ninety_six_well_content))
+                ROS_INFO("plan written");
     }else{
-            unsigned long timestamp;
-            if(readPlan(slice,timestamp,cubes_dim,cubes,cube_active,ninety_six_well_IDs,ninety_six_well_content)) {
-                    ROS_INFO("plan for slice %d with timestamp %ld successfully read", slice, timestamp);
-            }
+        unsigned long timestamp;
+        if(readPlan(slice,timestamp,cubes_dim,cubes,cube_active,ninety_six_well_IDs,ninety_six_well_content)) {
+                ROS_INFO("plan for slice %d with timestamp %ld successfully read", slice, timestamp);
+        }
     }
     Q_EMIT drawPlan_signal();
 }
