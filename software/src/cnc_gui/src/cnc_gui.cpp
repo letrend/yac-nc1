@@ -426,7 +426,7 @@ void CNCGUI::CalibrateCameraThread(){
             ROS_INFO_THROTTLE(1,"qr_tracking_error %.3f",qr_tracking_error);
     } while(qr_tracking_error>3);
     ROS_INFO("qr_tracking_error %.3f, starting calibration",qr_tracking_error);
-    ros::Duration d(3-(ros::Time::now()-t0).toSec());
+    ros::Duration d(3);
     d.sleep();
     qr_code_detected = false;
     focus_absolute = getV4L2("focus_absolute");
