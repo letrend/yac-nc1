@@ -412,7 +412,8 @@ void CNCGUI::CalibrateCameraThread(){
     grab_frames = false;
     do {
             if((ros::Time::now()-t0).toSec()>30) {
-                    ROS_WARN("timeout for qr_code tracking");
+                    ROS_ERROR("timeout for qr_code tracking, make sure QR code is visible. aborting calibration...");
+                    grab_frames = true;
                     return;
             }
             if(!grabFrame(frame[LOW_RES], LOW_RES))
