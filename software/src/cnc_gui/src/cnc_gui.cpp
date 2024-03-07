@@ -82,6 +82,7 @@ void CNCGUI::initPlugin(qt_gui_cpp::PluginContext &context) {
         QObject::connect(this, SIGNAL(confirm_setChecked_signal(int)), this, SLOT(confirm_setChecked(int)));
         QObject::connect(this, SIGNAL(abort_setChecked_signal(int)), this, SLOT(abort_setChecked(int)));
         QObject::connect(this, SIGNAL(led_set_color_signal(int)), this, SLOT(led_set_color(int)));
+        QObject::connect(this, SIGNAL(lights_setChecked_signal(int)), this, SLOT(lights_setChecked(int)));
         QObject::connect(this, SIGNAL(auto_focus_setChecked_signal(int)), this, SLOT(auto_focus_setChecked(int)));
 
         ui.cnc_area->installEventFilter( this );
@@ -357,6 +358,7 @@ void CNCGUI::calibrateCamera(){
         if(calibrate_camera_thread) // maybe it's running already, wait until done...
                 if(calibrate_camera_thread->joinable())
                         calibrate_camera_thread->join();
+        Q_EMIT lights_setChecked_signal(true);
         calibrate_camera_thread = boost::shared_ptr<std::thread>( new std::thread(&CNCGUI::CalibrateCameraThread, this));
         calibrate_camera_thread->detach();
 }
@@ -365,6 +367,7 @@ void CNCGUI::calibrateCleanser(){
         if(calibrate_cleanser_thread) // maybe it's running already, wait until done...
                 if(calibrate_cleanser_thread->joinable())
                         calibrate_cleanser_thread->join();
+        Q_EMIT lights_setChecked_signal(true);
         calibrate_cleanser_thread = boost::shared_ptr<std::thread>( new std::thread(&CNCGUI::CalibrateCleanserThread, this));
         calibrate_cleanser_thread->detach();
 }
@@ -373,6 +376,7 @@ void CNCGUI::calibrate96well_0(){
         if(calibrate_96well_thread) // maybe it's running already, wait until done...
                 if(calibrate_96well_thread->joinable())
                         calibrate_96well_thread->join();
+        Q_EMIT lights_setChecked_signal(true);
         calibrate_96well_thread = boost::shared_ptr<std::thread>( new std::thread(&CNCGUI::Calibrate96wellThread, this, 0));
         calibrate_96well_thread->detach();
 }
@@ -381,6 +385,7 @@ void CNCGUI::calibrate96well_1(){
         if(calibrate_96well_thread) // maybe it's running already, wait until done...
                 if(calibrate_96well_thread->joinable())
                         calibrate_96well_thread->join();
+        Q_EMIT lights_setChecked_signal(true);
         calibrate_96well_thread = boost::shared_ptr<std::thread>( new std::thread(&CNCGUI::Calibrate96wellThread, this, 1));
         calibrate_96well_thread->detach();
 }
@@ -389,6 +394,7 @@ void CNCGUI::calibrateBrain(){
         if(calibrate_brain_thread) // maybe it's running already, wait until done...
                 if(calibrate_brain_thread->joinable())
                         calibrate_brain_thread->join();
+        Q_EMIT lights_setChecked_signal(true);
         calibrate_brain_thread = boost::shared_ptr<std::thread>( new std::thread(&CNCGUI::CalibrateBrainThread, this));
         calibrate_brain_thread->detach();
 }
@@ -1028,6 +1034,11 @@ void CNCGUI::led_set_color(int color){
             ui.LED->setStyleSheet("background-color: lightgray");
             break;
     }
+}
+
+void CNCGUI::lights_setChecked(int checked){
+    ui.lights->setChecked(checked);
+    lights();
 }
 
 void CNCGUI::confirm_setChecked(int checked){

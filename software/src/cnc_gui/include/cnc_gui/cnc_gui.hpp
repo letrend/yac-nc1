@@ -87,6 +87,7 @@ public Q_SLOTS:
     void confirm_setChecked(int checked);
     void abort_setChecked(int checked);
     void auto_focus_setChecked(int checked);
+    void lights_setChecked(int checked);
     void led_set_color(int color);
 
 Q_SIGNALS:
@@ -102,6 +103,7 @@ Q_SIGNALS:
     void confirm_setChecked_signal(int checked);
     void abort_setChecked_signal(int checked);
     void auto_focus_setChecked_signal(int checked);
+    void lights_setChecked_signal(int checked);
     void led_set_color_signal(int color);
 private:
     void CalibrateCameraThread();
