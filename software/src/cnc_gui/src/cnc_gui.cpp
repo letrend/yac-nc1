@@ -1012,7 +1012,7 @@ bool CNCGUI::checkConfirm(int timeout_sec){
     }
     Q_EMIT abort_setChecked_signal(false);
     Q_EMIT confirm_setChecked_signal(false);
-    ui.LED->setStyleSheet("background: lightgray");
+    Q_EMIT led_set_color_signal(2);
     return true;
 }
 
